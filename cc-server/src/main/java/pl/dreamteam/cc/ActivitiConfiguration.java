@@ -1,4 +1,4 @@
-package org.activiti;
+package pl.dreamteam.cc;
 
 import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;

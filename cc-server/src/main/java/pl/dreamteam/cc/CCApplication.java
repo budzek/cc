@@ -1,6 +1,5 @@
-package org.activiti;
+package pl.dreamteam.cc;
 
-import com.skype.*;
 import org.activiti.engine.IdentityService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.SpringApplication;
@@ -56,21 +55,8 @@ public class CCApplication extends SpringBootServletInitializer {
         return new InitializingBean() {
             public void afterPropertiesSet() throws Exception {
 
+                System.out.println("dupa");
 
-                Skype.setDaemon(false);
-                Skype.addCallListener(new CallAdapter() {
-                    @Override
-                    public void callReceived(Call receivedCall) throws SkypeException {
-                        Profile.CallForwardingRule[] oldRules = Skype.getProfile().getAllCallForwardingRules();
-                        Skype.getProfile().setAllCallForwardingRules(new Profile.CallForwardingRule[] { new Profile.CallForwardingRule(0, 30, "echo123") });
-                        receivedCall.forward();
-                        try {
-                            Thread.sleep(10000); // to prevent finishing this call
-                        } catch (InterruptedException e) {
-                        }
-                        Skype.getProfile().setAllCallForwardingRules(oldRules);
-                    }
-                });
 
 //                Group group = identityService.newGroup("user");
 //                group.setName("users");

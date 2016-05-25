@@ -16,6 +16,7 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.subethamail.wiser.Wiser;
+import pl.dreamteam.cc.CCApplication;
 import pl.dreamteam.cc.model.Applicant;
 import pl.dreamteam.cc.service.repository.ApplicantRepository;
 

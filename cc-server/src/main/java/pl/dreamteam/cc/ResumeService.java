@@ -1,4 +1,4 @@
-package org.activiti;
+package pl.dreamteam.cc;
 
 import org.springframework.stereotype.Component;
 

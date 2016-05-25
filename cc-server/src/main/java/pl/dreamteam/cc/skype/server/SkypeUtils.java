@@ -1,27 +1,13 @@
 package pl.dreamteam.cc.skype.server;
 
 import com.skype.*;
-import org.springframework.boot.context.event.ApplicationStartedEvent;
-import org.springframework.stereotype.Component;
 
 /**
  * Created by abu on 23.05.2016.
  */
+public class SkypeUtils {
 
-@Component
-public class CallHandler   implements org.springframework.context.ApplicationListener<ApplicationStartedEvent> {
-
-  @Override
-  public void onApplicationEvent(final ApplicationStartedEvent event) {
-    try {
-      callHanlder();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
-
-
-  public void callHanlder() throws Exception {
+  public void forwarder() throws SkypeException {
     Skype.setDaemon(false);
     Skype.addCallListener(new CallAdapter() {
       @Override
@@ -36,5 +22,8 @@ public class CallHandler   implements org.springframework.context.ApplicationLis
         Skype.getProfile().setAllCallForwardingRules(oldRules);
       }
     });
+
+
+
   }
 }
