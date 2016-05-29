@@ -23,7 +23,7 @@ public class ActivitiConfiguration extends AbstractProcessEngineAutoConfiguratio
   public DataSource activitiDataSource() {
     return DataSourceBuilder
       .create()
-      .url("jdbc:h2:file:C:/cc-server/activiti;AUTO_SERVER=TRUE")
+      .url("jdbc:h2:file:C:/cc-server/activiti;AUTO_SERVER=TRUE;DB_CLOSE_ON_EXIT=FALSE")
       .username("sa")
       .driverClassName("org.h2.Driver")
       .build();

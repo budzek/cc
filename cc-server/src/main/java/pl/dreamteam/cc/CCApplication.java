@@ -2,14 +2,19 @@ package pl.dreamteam.cc;
 
 import org.activiti.engine.IdentityService;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
+import pl.dreamteam.cc.skype.server.CallHandler;
 
 @SpringBootApplication
 public class CCApplication extends SpringBootServletInitializer {
+
+    @Autowired
+    CallHandler callHanler;
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
@@ -68,6 +73,16 @@ public class CCApplication extends SpringBootServletInitializer {
 //                identityService.saveUser(admin);
 
             }
+        };
+    }
+
+
+    @Bean InitializingBean skypeInitializer(final IdentityService identityService) {
+        return () -> {
+            System.out.println("dupa skype");
+//            callHanler.callHanlder();
+            System.out.println("dupa skype2");
+
         };
     }
 
