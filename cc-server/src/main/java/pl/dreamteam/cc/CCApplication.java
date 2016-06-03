@@ -8,18 +8,22 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ImportResource;
 import pl.dreamteam.cc.skype.server.CallHandler;
 
 @SpringBootApplication
-public class CCApplication extends SpringBootServletInitializer {
+@ImportResource("classpath:/spring/spring-config.xml")
+public class CCApplication
+{
+//        extends SpringBootServletInitializer {
 
     @Autowired
     CallHandler callHanler;
 
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(CCApplication.class);
-    }
+//    @Override
+//    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+//        return application.sources(CCApplication.class);
+//    }
 
     public static void main(String[] args) {
         SpringApplication.run(CCApplication.class, args);

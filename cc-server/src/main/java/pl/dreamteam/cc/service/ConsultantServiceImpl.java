@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.dreamteam.cc.model.Consultant;
+import pl.dreamteam.cc.dto.Status;
 import pl.dreamteam.cc.service.repository.ConsultantRepository;
 
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class ConsultantService {
+public class ConsultantServiceImpl implements ConsultantService{
 
   @Autowired
   ConsultantRepository consultantRepository;
@@ -35,4 +36,8 @@ public class ConsultantService {
     return consultantRepository.findAll().stream().filter(c -> c.isLoggedIn() && !c.isTalking()).collect(Collectors.<Consultant>toList());
   }
 
+  @Override
+  public void setStatus(String consultantId, Status status) {
+    System.out.println("ustawiam status " + status + " dla konsultanta " + consultantId);
+  }
 }

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:component-scan base-package="pl.dreamteam.cc"/>
+
+    <bean id="consultantService" class="pl.dreamteam.cc.service.ConsultantServiceImpl">
+        <!-- any additional properties, maybe a DAO? -->
+    </bean>
+
+    <bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+        <!-- does not necessarily have to be the same name as the bean to be exported -->
+        <property name="serviceName" value="ConsultantService"/>
+        <property name="service" ref="consultantService"/>
+        <property name="serviceInterface" value="pl.dreamteam.cc.service.ConsultantService"/>
+        <!-- defaults to 1099 -->
+        <property name="registryPort" value="1199"/>
+    </bean>
+</beans>

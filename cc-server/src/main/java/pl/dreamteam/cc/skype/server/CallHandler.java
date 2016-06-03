@@ -19,77 +19,65 @@ import java.util.concurrent.Executors;
 @Component
 public class CallHandler implements org.springframework.context.ApplicationListener<ApplicationStartedEvent> {
 
-  @Override
-  public void onApplicationEvent(final ApplicationStartedEvent event) {
+    @Override
+    public void onApplicationEvent(final ApplicationStartedEvent event) {
 
-  }
+    }
 
 
     private static final Logger logger = LogManager
             .getLogger(CallHandler.class);
 
-    private ExecutorService executorService;
-
     @PostConstruct
     public void init() {
-
-      BasicThreadFactory factory = new BasicThreadFactory.Builder()
-              .namingPattern("myspringbean-thread-%d").build();
-
-      executorService = Executors.newSingleThreadExecutor(factory);
-      executorService.execute(new Runnable() {
-
-        @Override
-        public void run() {
-          try {
-            // do something
-            System.out.println("thread started 0");
-
-            callHanlder();
-            System.out.println("thread started 1");
-          } catch (Exception e) {
-            logger.error("error: ", e);
-          }
-        }
-      });
-
-      executorService.shutdown();
-
-    }
-
-    @PreDestroy
-    public void beandestroy() {
-      if (executorService != null) {
-        executorService.shutdownNow();
-      }
+//        callHanlder();
     }
 
 
-  public void callHanlder()  {
-    try {
-      attachCallHandler();
-    } catch (NotAttachedException e) {
-      e.printStackTrace();
-    } catch (SkypeException e) {
-      e.printStackTrace();
-    }
-  }
-
-  public void attachCallHandler() throws SkypeException {
-    Skype.setDaemon(false);
-    Skype.setDebug(true);
-    Skype.addCallListener(new CallAdapter() {
-      @Override
-      public void callReceived(Call receivedCall) throws SkypeException {
-        Profile.CallForwardingRule[] oldRules = Skype.getProfile().getAllCallForwardingRules();
-        Skype.getProfile().setAllCallForwardingRules(new Profile.CallForwardingRule[] { new Profile.CallForwardingRule(0, 30, "echo123") });
-        receivedCall.forward();
+    public void callHanlder() {
         try {
-          Thread.sleep(10000); // to prevent finishing this call
-        } catch (InterruptedException e) {
+            attachCallHandler();
+        } catch (NotAttachedException e) {
+            e.printStackTrace();
+        } catch (SkypeException e) {
+            e.printStackTrace();
         }
-        Skype.getProfile().setAllCallForwardingRules(oldRules);
-      }
-    });
-  }
+    }
+
+    public void attachCallHandler() throws SkypeException {
+        Skype.setDaemon(false);
+        Skype.setDebug(true);
+        Skype.addCallListener(new CallAdapter() {
+            @Override
+            public void callReceived(Call receivedCall) throws SkypeException {
+                Profile.CallForwardingRule[] oldRules = Skype.getProfile().getAllCallForwardingRules();
+                Skype.getProfile().setAllCallForwardingRules(new Profile.CallForwardingRule[]{new Profile.CallForwardingRule(0, 30, "echo123")});
+                receivedCall.forward();
+                try {
+                    Thread.sleep(10000); // to prevent finishing this call
+                } catch (InterruptedException e) {
+                }
+                Skype.getProfile().setAllCallForwardingRules(oldRules);
+            }
+        });
+
+        Skype.addChatMessageListener(new ChatMessageAdapter() {
+            public void chatMessageReceived(ChatMessage received)
+                    throws SkypeException {
+                if (received.getType().equals(ChatMessage.Type.SAID)) {
+
+                    // Sender
+                    // User sender =received.getSender();
+
+                    System.out.println(received.getSender().getId() +" say:");
+                    System.out.println(" "+received.getContent() );
+
+                    received.getSender().send(
+                            "I'm working. Please, wait a moment.");
+
+                    System.out.println(" - Auto answered!");
+                }
+            }
+        });
+    }
 }

@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
@@ -19,11 +20,12 @@ import java.io.IOException;
 public class ActivitiConfiguration extends AbstractProcessEngineAutoConfiguration {
 
   @Bean
+  @Primary
   @ConfigurationProperties(prefix = "datasource.activiti")
   public DataSource activitiDataSource() {
     return DataSourceBuilder
       .create()
-      .url("jdbc:h2:file:C:/cc-server/activiti;AUTO_SERVER=TRUE;DB_CLOSE_ON_EXIT=FALSE")
+      .url("jdbc:h2:file:C:/cc-server/activiti;AUTO_SERVER=TRUE;")
       .username("sa")
       .driverClassName("org.h2.Driver")
       .build();
