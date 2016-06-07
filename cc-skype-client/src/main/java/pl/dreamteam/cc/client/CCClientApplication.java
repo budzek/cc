@@ -19,11 +19,7 @@ public class CCClientApplication {
 
 
     public static void main(String[] args) {
-        ApplicationContext applicationContext = SpringApplication.run(CCClientApplication.class, args);
-
-        ServiceFactory serviceFactory = (ServiceFactory) applicationContext.getBean(ServiceFactory.class);
-
-        serviceFactory.getConsultantService().setStatus("LOL", Status.OFFLINE);
+        ServiceFactory.getInstance().getConsultantService().setStatus("LOL", Status.OFFLINE);
 
 
     }

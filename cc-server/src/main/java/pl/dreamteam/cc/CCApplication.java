@@ -4,26 +4,63 @@ import org.activiti.engine.IdentityService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportResource;
+import org.springframework.remoting.caucho.HessianServiceExporter;
+import pl.dreamteam.cc.service.ConsultantService;
 import pl.dreamteam.cc.skype.server.CallHandler;
+
 
 @SpringBootApplication
 @ImportResource("classpath:/spring/spring-config.xml")
+
+/**
+ * Taken from:
+ * https://forums.activiti.org/content/disable-activiti-spring-rest-api-basic-authentication
+ *
+ * Unless this is used, Spring security requests authorization on the link that exposes hessian service.
+ * No luck to find the user for such authentication.
+ * I had to switch off the Spring security in th whole application.
+ *
+ * TOASK:
+ * Probably creating a servlet (or registering some new mapping with no auth will also solve that issue.
+ */
+@EnableAutoConfiguration(exclude = {
+        org.activiti.spring.boot.RestApiAutoConfiguration.class,
+        org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration.class,
+        org.activiti.spring.boot.SecurityAutoConfiguration.class,
+        org.springframework.boot.actuate.autoconfigure.ManagementWebSecurityAutoConfiguration.class
+})
 public class CCApplication
 {
+    /** uncomment this for use as war in external tomcat  **/
 //        extends SpringBootServletInitializer {
-
-    @Autowired
-    CallHandler callHanler;
-
 //    @Override
 //    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
 //        return application.sources(CCApplication.class);
 //    }
+
+    @Autowired
+    CallHandler callHanler;
+
+    @Autowired
+    private ConsultantService consultantService;
+
+
+    @Bean(name = "/ConsultantService")
+//    public HessianServiceExporter dispatcherServlet() {
+    public HessianServiceExporter consultantService() {
+
+        HessianServiceExporter exporter = new HessianServiceExporter();
+//        exporter.setDebug(true);
+        exporter.setService(consultantService);
+        exporter.setServiceInterface(ConsultantService.class);
+        return exporter;
+    }
+
+
 
     public static void main(String[] args) {
         SpringApplication.run(CCApplication.class, args);

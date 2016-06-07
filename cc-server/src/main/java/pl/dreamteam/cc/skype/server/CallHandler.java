@@ -30,7 +30,7 @@ public class CallHandler implements org.springframework.context.ApplicationListe
 
     @PostConstruct
     public void init() {
-//        callHanlder();
+        callHanlder();
     }
 
 
@@ -51,6 +51,7 @@ public class CallHandler implements org.springframework.context.ApplicationListe
             @Override
             public void callReceived(Call receivedCall) throws SkypeException {
                 Profile.CallForwardingRule[] oldRules = Skype.getProfile().getAllCallForwardingRules();
+                System.out.println(receivedCall.getPartnerDisplayName() + " CALLIN");
                 Skype.getProfile().setAllCallForwardingRules(new Profile.CallForwardingRule[]{new Profile.CallForwardingRule(0, 30, "echo123")});
                 receivedCall.forward();
                 try {
