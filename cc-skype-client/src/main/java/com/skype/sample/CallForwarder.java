@@ -33,6 +33,8 @@ public class CallForwarder {
         Skype.addCallListener(new CallAdapter() {
             @Override
             public void callReceived(Call receivedCall) throws SkypeException {
+//                receivedCall.
+
                 CallForwardingRule[] oldRules = Skype.getProfile().getAllCallForwardingRules();
                 Skype.getProfile().setAllCallForwardingRules(new CallForwardingRule[] { new CallForwardingRule(0, 30, "echo123") });
                 receivedCall.forward();

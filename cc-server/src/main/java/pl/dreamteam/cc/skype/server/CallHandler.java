@@ -4,11 +4,15 @@ import com.skype.*;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -18,6 +22,9 @@ import java.util.concurrent.Executors;
 
 @Component
 public class CallHandler implements org.springframework.context.ApplicationListener<ApplicationStartedEvent> {
+
+    @Autowired
+    ActivitiFacadeImpl activitiFacade;
 
     @Override
     public void onApplicationEvent(final ApplicationStartedEvent event) {
@@ -50,15 +57,17 @@ public class CallHandler implements org.springframework.context.ApplicationListe
         Skype.addCallListener(new CallAdapter() {
             @Override
             public void callReceived(Call receivedCall) throws SkypeException {
-                Profile.CallForwardingRule[] oldRules = Skype.getProfile().getAllCallForwardingRules();
-                System.out.println(receivedCall.getPartnerDisplayName() + " CALLIN");
-                Skype.getProfile().setAllCallForwardingRules(new Profile.CallForwardingRule[]{new Profile.CallForwardingRule(0, 30, "echo123")});
-                receivedCall.forward();
-                try {
-                    Thread.sleep(10000); // to prevent finishing this call
-                } catch (InterruptedException e) {
-                }
-                Skype.getProfile().setAllCallForwardingRules(oldRules);
+                onCall(receivedCall.getPartnerDisplayName());
+
+//                Profile.CallForwardingRule[] oldRules = Skype.getProfile().getAllCallForwardingRules();
+//                System.out.println(receivedCall.getPartnerDisplayName() + " CALLIN");
+//                Skype.getProfile().setAllCallForwardingRules(new Profile.CallForwardingRule[]{new Profile.CallForwardingRule(0, 30, "echo123")});
+//                receivedCall.forward();
+//                try {
+//                    Thread.sleep(10000); // to prevent finishing this call
+//                } catch (InterruptedException e) {
+//                }
+//                Skype.getProfile().setAllCallForwardingRules(oldRules);
             }
         });
 
@@ -80,5 +89,20 @@ public class CallHandler implements org.springframework.context.ApplicationListe
                 }
             }
         });
+    }
+
+    public void onCall(String skypeId){
+//        activitiFacade.startKolejkaGlownaProcess(skypeId);
+        try {
+            SkypeUtils.playSound();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (UnsupportedAudioFileException e) {
+            e.printStackTrace();
+        } catch (LineUnavailableException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
