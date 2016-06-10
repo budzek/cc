@@ -2,12 +2,20 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef">
 
   <message id="NUMER_WYBRANY_PRZEZ_KLIENTA" name="Numer wybrany przez klienta" />
+  <message id="PROCESS_GLOWNY_LOGOWANIE" name="PROCESS_GLOWNY_LOGOWANIE" />
+  <error id="processGlownyErrorBledneDane" errorCode="processGlownyErrorBledneDane" />
 
   <process id="procesGlowny" isExecutable="true">
     <sequenceFlow id="sid-9E3AE874-F06F-4DFB-BFA1-0D9470FF54FB" sourceRef="sid-E5C52330-C68E-4ACB-ACD7-575B74ACC372" targetRef="sid-FB7DE2F4-096B-4128-A48F-95FFC694109C"></sequenceFlow>
     <subProcess id="sid-FB7DE2F4-096B-4128-A48F-95FFC694109C" name="Kolejka główna">
-      <serviceTask id="sid-B58D76DD-FBE1-47E4-A60F-B62ECCD935B2" name="Odczytaj frazę powitalnę i dostępne opcje"  activiti:expression="#{processGlownyDelegate.execute(execution)}" ></serviceTask>
-      <receiveTask id="sid-6E7636AE-3F8F-47AD-9CA9-509E9115C8B5" name="Odbierz wybór"></receiveTask>
+      <serviceTask id="sid-B58D76DD-FBE1-47E4-A60F-B62ECCD935B2" name="Odczytaj frazę powitalnę i dostępne opcje"
+                   activiti:expression="#{soundService.playWelcomePhrase()}"/>
+      <receiveTask id="odbierzWyborTask" name="Odbierz wybór"/>
+
+      <boundaryEvent id="bledne_dane_error" name="Błędny wybór" attachedToRef="odbierzWyborTask">
+        <errorEventDefinition errorRef="processGlownyErrorBledneDane"/>
+      </boundaryEvent>
+
       <startEvent id="sid-E04FA81B-4E0F-419E-A07E-F6AD769FCB7E"></startEvent>
       <exclusiveGateway id="sid-3151C455-57D9-4B0A-B594-CD2FC1504107"></exclusiveGateway>
       <exclusiveGateway id="sid-E7DB8954-3741-4C81-BAF5-1455353F5FBD" name="Pierwszy błędny wybór ?"></exclusiveGateway>
@@ -23,13 +31,20 @@
         <errorEventDefinition></errorEventDefinition>
       </boundaryEvent>
       <sequenceFlow id="sid-63473DDD-2BAA-4C41-BD6A-92762CDC2A94" sourceRef="sid-E04FA81B-4E0F-419E-A07E-F6AD769FCB7E" targetRef="sid-B58D76DD-FBE1-47E4-A60F-B62ECCD935B2"></sequenceFlow>
-      <sequenceFlow id="sid-F2874C47-5EDE-4B62-AE42-A66F02C6124C" sourceRef="sid-B58D76DD-FBE1-47E4-A60F-B62ECCD935B2" targetRef="sid-6E7636AE-3F8F-47AD-9CA9-509E9115C8B5"></sequenceFlow>
-      <sequenceFlow id="sid-8D0B4D1D-1FAD-45F6-A4E4-F7D88ED52628" name="3. Powtórz powitanie" sourceRef="sid-3151C455-57D9-4B0A-B594-CD2FC1504107" targetRef="sid-B58D76DD-FBE1-47E4-A60F-B62ECCD935B2"></sequenceFlow>
+      <sequenceFlow id="sid-F2874C47-5EDE-4B62-AE42-A66F02C6124C" sourceRef="sid-B58D76DD-FBE1-47E4-A60F-B62ECCD935B2" targetRef="odbierzWyborTask"></sequenceFlow>
+      <sequenceFlow id="sid-8D0B4D1D-1FAD-45F6-A4E4-F7D88ED52628" name="3. Powtórz powitanie" sourceRef="sid-3151C455-57D9-4B0A-B594-CD2FC1504107" targetRef="sid-B58D76DD-FBE1-47E4-A60F-B62ECCD935B2">
+        <conditionExpression xsi:type="tFormalExpression">${INPUT == 3}</conditionExpression>
+      </sequenceFlow>
       <sequenceFlow id="sid-FE9A5C2D-2CF3-4F98-8524-36828623EC7D" name="TAK" sourceRef="sid-E7DB8954-3741-4C81-BAF5-1455353F5FBD" targetRef="sid-B58D76DD-FBE1-47E4-A60F-B62ECCD935B2"></sequenceFlow>
-      <sequenceFlow id="sid-C68177DF-9285-4454-A63C-79EAC2798BFE" name="1. Logowanie" sourceRef="sid-3151C455-57D9-4B0A-B594-CD2FC1504107" targetRef="sid-F3F12EE0-9EC7-40E5-9A99-192FEDC0CB07"></sequenceFlow>
-      <sequenceFlow id="sid-1391E0EE-0F91-496C-85E1-3EB5C8A73720" sourceRef="sid-6E7636AE-3F8F-47AD-9CA9-509E9115C8B5" targetRef="sid-3151C455-57D9-4B0A-B594-CD2FC1504107"></sequenceFlow>
+      <sequenceFlow id="sid-C68177DF-9285-4454-A63C-79EAC2798BFE" name="1. Logowanie" sourceRef="sid-3151C455-57D9-4B0A-B594-CD2FC1504107" targetRef="sid-F3F12EE0-9EC7-40E5-9A99-192FEDC0CB07">
+        <conditionExpression xsi:type="tFormalExpression">${INPUT == 1}</conditionExpression>
+
+      </sequenceFlow>
+      <sequenceFlow id="sid-1391E0EE-0F91-496C-85E1-3EB5C8A73720" sourceRef="odbierzWyborTask" targetRef="sid-3151C455-57D9-4B0A-B594-CD2FC1504107"></sequenceFlow>
       <sequenceFlow id="sid-354C0C3B-26F6-4CF8-8282-CF3D298702C2" name="NIE" sourceRef="sid-E7DB8954-3741-4C81-BAF5-1455353F5FBD" targetRef="sid-8D8B7DEC-F2A4-4150-AC03-2AD152478D27"></sequenceFlow>
-      <sequenceFlow id="sid-8B78E5D5-25E2-4775-964A-0E6381C71B93" name="2. Połączenie z konsultantem" sourceRef="sid-3151C455-57D9-4B0A-B594-CD2FC1504107" targetRef="sid-8D8B7DEC-F2A4-4150-AC03-2AD152478D27"></sequenceFlow>
+      <sequenceFlow id="sid-8B78E5D5-25E2-4775-964A-0E6381C71B93" name="2. Połączenie z konsultantem" sourceRef="sid-3151C455-57D9-4B0A-B594-CD2FC1504107" targetRef="sid-8D8B7DEC-F2A4-4150-AC03-2AD152478D27">
+        <conditionExpression xsi:type="tFormalExpression">${INPUT == 3}</conditionExpression>
+      </sequenceFlow>
       <sequenceFlow id="sid-A2914CA2-4690-47E4-A4D0-96BCCA37DDB1" sourceRef="sid-F3F12EE0-9EC7-40E5-9A99-192FEDC0CB07" targetRef="sid-3994B09C-050E-4A94-8DE0-56EB395D76F0"></sequenceFlow>
       <sequenceFlow id="sid-D482E823-58F0-4874-A24E-E4A9BC139399" sourceRef="sid-8D8B7DEC-F2A4-4150-AC03-2AD152478D27" targetRef="sid-9CEFDC97-F162-4A74-AE3D-3A5FFCD12B5F"></sequenceFlow>
       <sequenceFlow id="sid-E6419815-0913-43D8-8FE0-30DE1C24B23D" sourceRef="sid-9CEFDC97-F162-4A74-AE3D-3A5FFCD12B5F" targetRef="sid-8C632AC2-FEA0-4713-84D9-3539CFB6611A"></sequenceFlow>
@@ -55,7 +70,7 @@
       <bpmndi:BPMNShape bpmnElement="sid-B58D76DD-FBE1-47E4-A60F-B62ECCD935B2" id="BPMNShape_sid-B58D76DD-FBE1-47E4-A60F-B62ECCD935B2">
         <omgdc:Bounds height="80.0" width="100.0" x="237.0" y="208.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="sid-6E7636AE-3F8F-47AD-9CA9-509E9115C8B5" id="BPMNShape_sid-6E7636AE-3F8F-47AD-9CA9-509E9115C8B5">
+      <bpmndi:BPMNShape bpmnElement="odbierzWyborTask" id="BPMNShape_odbierzWyborTask">
         <omgdc:Bounds height="80.0" width="100.0" x="402.0" y="208.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="sid-E04FA81B-4E0F-419E-A07E-F6AD769FCB7E" id="BPMNShape_sid-E04FA81B-4E0F-419E-A07E-F6AD769FCB7E">
