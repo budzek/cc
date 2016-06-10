@@ -3,6 +3,7 @@ package pl.dreamteam.cc.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.dreamteam.cc.exception.NoConsultantAvailableException;
 import pl.dreamteam.cc.model.Consultant;
 import pl.dreamteam.cc.dto.Status;
 import pl.dreamteam.cc.service.repository.ConsultantRepository;
@@ -21,7 +22,7 @@ public class ConsultantServiceImpl implements ConsultantService{
   @Autowired
   ConsultantRepository consultantRepository;
 
-  public Consultant getFirstAvailable() throws NoConsultantAvailableException{
+  public Consultant getFirstAvailable() throws NoConsultantAvailableException {
     List<Consultant> list = getAllAvailable();
 
     if(list.isEmpty())

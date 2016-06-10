@@ -19,6 +19,7 @@
   <properties>
     <activiti.version>5.19.0.2</activiti.version>
     <tomcat.version>8.0.32</tomcat.version>
+    <start-class>pl.dreamteam.cc.CCApplication</start-class>
   </properties>
 
   <dependencies>
@@ -58,6 +59,12 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <!--LOGGING-->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
     </dependency>
 
     <!--<dependency>-->

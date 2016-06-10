@@ -1,61 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef">
-
-  <message id="NUMER_WYBRANY_PRZEZ_KLIENTA" name="Numer wybrany przez klienta" />
-  <message id="PROCESS_GLOWNY_LOGOWANIE" name="PROCESS_GLOWNY_LOGOWANIE" />
-  <error id="processGlownyErrorBledneDane" errorCode="processGlownyErrorBledneDane" />
+  <message id="NUMER_WYBRANY_PRZEZ_KLIENTA" name="http://www.activiti.org/processdef:NUMER_WYBRANY_PRZEZ_KLIENTA"></message>
+  <error id="processGlownyErrorBlednyWybor" errorCode="processGlownyErrorBlednyWybor" />
 
   <process id="procesGlowny" isExecutable="true">
     <sequenceFlow id="sid-9E3AE874-F06F-4DFB-BFA1-0D9470FF54FB" sourceRef="sid-E5C52330-C68E-4ACB-ACD7-575B74ACC372" targetRef="sid-FB7DE2F4-096B-4128-A48F-95FFC694109C"></sequenceFlow>
     <subProcess id="sid-FB7DE2F4-096B-4128-A48F-95FFC694109C" name="Kolejka główna">
-      <serviceTask id="sid-B58D76DD-FBE1-47E4-A60F-B62ECCD935B2" name="Odczytaj frazę powitalnę i dostępne opcje"
-                   activiti:expression="#{soundService.playWelcomePhrase()}"/>
-      <receiveTask id="odbierzWyborTask" name="Odbierz wybór"/>
-
-      <boundaryEvent id="bledne_dane_error" name="Błędny wybór" attachedToRef="odbierzWyborTask">
-        <errorEventDefinition errorRef="processGlownyErrorBledneDane"/>
-      </boundaryEvent>
-
+      <serviceTask id="sid-B58D76DD-FBE1-47E4-A60F-B62ECCD935B2" name="Odczytaj frazę powitalnę i dostępne opcje" activiti:expression="#{soundService.playWelcomePhrase()}"></serviceTask>
+      <receiveTask id="odbierzWyborTask" name="Odbierz wybór"></receiveTask>
       <startEvent id="sid-E04FA81B-4E0F-419E-A07E-F6AD769FCB7E"></startEvent>
       <exclusiveGateway id="sid-3151C455-57D9-4B0A-B594-CD2FC1504107"></exclusiveGateway>
       <exclusiveGateway id="sid-E7DB8954-3741-4C81-BAF5-1455353F5FBD" name="Pierwszy błędny wybór ?"></exclusiveGateway>
-      <subProcess id="sid-8D8B7DEC-F2A4-4150-AC03-2AD152478D27" name="Połączenie z konsultantem"></subProcess>
-      <subProcess id="sid-F3F12EE0-9EC7-40E5-9A99-192FEDC0CB07" name="Logowanie"></subProcess>
-      <subProcess id="sid-3994B09C-050E-4A94-8DE0-56EB395D76F0" name="Obsługa automatyczna"></subProcess>
-      <subProcess id="sid-9CEFDC97-F162-4A74-AE3D-3A5FFCD12B5F" name="Obsługa manualna"></subProcess>
+      <subProcess id="procesPolaczenieZKonsultantem" name="Połączenie z konsultantem"></subProcess>
+      <subProcess id="procesLogowanie" name="Logowanie"></subProcess>
+      <subProcess id="procesObslugaAutomatyczna" name="Obsługa automatyczna"></subProcess>
+      <subProcess id="procesObslugaManualna" name="Obsługa manualna"></subProcess>
       <endEvent id="sid-EF15FAAF-D877-436A-B29D-2992C23CDDDC" name="Rozłącz z systemem">
         <errorEventDefinition></errorEventDefinition>
       </endEvent>
       <endEvent id="sid-8C632AC2-FEA0-4713-84D9-3539CFB6611A"></endEvent>
-      <boundaryEvent id="_3" name="Dwukrotnie błędne dane" attachedToRef="sid-F3F12EE0-9EC7-40E5-9A99-192FEDC0CB07">
+      <boundaryEvent id="_3" name="Dwukrotnie błędne dane" attachedToRef="procesLogowanie">
         <errorEventDefinition></errorEventDefinition>
+      </boundaryEvent>
+      <boundaryEvent id="sid-7BBA176E-8666-4863-A9FA-D3C3AFFB7386" name="Blędny wybór" attachedToRef="odbierzWyborTask">
+        <errorEventDefinition errorRef="processGlownyErrorBlednyWybor"/>
       </boundaryEvent>
       <sequenceFlow id="sid-63473DDD-2BAA-4C41-BD6A-92762CDC2A94" sourceRef="sid-E04FA81B-4E0F-419E-A07E-F6AD769FCB7E" targetRef="sid-B58D76DD-FBE1-47E4-A60F-B62ECCD935B2"></sequenceFlow>
       <sequenceFlow id="sid-F2874C47-5EDE-4B62-AE42-A66F02C6124C" sourceRef="sid-B58D76DD-FBE1-47E4-A60F-B62ECCD935B2" targetRef="odbierzWyborTask"></sequenceFlow>
       <sequenceFlow id="sid-8D0B4D1D-1FAD-45F6-A4E4-F7D88ED52628" name="3. Powtórz powitanie" sourceRef="sid-3151C455-57D9-4B0A-B594-CD2FC1504107" targetRef="sid-B58D76DD-FBE1-47E4-A60F-B62ECCD935B2">
+        <!--<conditionExpression xsi:type="tFormalExpression"><![CDATA[${INPUT == 3}]]></conditionExpression>-->
         <conditionExpression xsi:type="tFormalExpression">${INPUT == 3}</conditionExpression>
       </sequenceFlow>
       <sequenceFlow id="sid-FE9A5C2D-2CF3-4F98-8524-36828623EC7D" name="TAK" sourceRef="sid-E7DB8954-3741-4C81-BAF5-1455353F5FBD" targetRef="sid-B58D76DD-FBE1-47E4-A60F-B62ECCD935B2"></sequenceFlow>
-      <sequenceFlow id="sid-C68177DF-9285-4454-A63C-79EAC2798BFE" name="1. Logowanie" sourceRef="sid-3151C455-57D9-4B0A-B594-CD2FC1504107" targetRef="sid-F3F12EE0-9EC7-40E5-9A99-192FEDC0CB07">
+      <sequenceFlow id="sid-C68177DF-9285-4454-A63C-79EAC2798BFE" name="1. Logowanie" sourceRef="sid-3151C455-57D9-4B0A-B594-CD2FC1504107" targetRef="procesLogowanie">
+        <!--<conditionExpression xsi:type="tFormalExpression"><![CDATA[${INPUT == 1}]]></conditionExpression>-->
         <conditionExpression xsi:type="tFormalExpression">${INPUT == 1}</conditionExpression>
-
       </sequenceFlow>
       <sequenceFlow id="sid-1391E0EE-0F91-496C-85E1-3EB5C8A73720" sourceRef="odbierzWyborTask" targetRef="sid-3151C455-57D9-4B0A-B594-CD2FC1504107"></sequenceFlow>
-      <sequenceFlow id="sid-354C0C3B-26F6-4CF8-8282-CF3D298702C2" name="NIE" sourceRef="sid-E7DB8954-3741-4C81-BAF5-1455353F5FBD" targetRef="sid-8D8B7DEC-F2A4-4150-AC03-2AD152478D27"></sequenceFlow>
-      <sequenceFlow id="sid-8B78E5D5-25E2-4775-964A-0E6381C71B93" name="2. Połączenie z konsultantem" sourceRef="sid-3151C455-57D9-4B0A-B594-CD2FC1504107" targetRef="sid-8D8B7DEC-F2A4-4150-AC03-2AD152478D27">
+      <sequenceFlow id="sid-354C0C3B-26F6-4CF8-8282-CF3D298702C2" name="NIE" sourceRef="sid-E7DB8954-3741-4C81-BAF5-1455353F5FBD" targetRef="procesPolaczenieZKonsultantem"></sequenceFlow>
+      <sequenceFlow id="sid-8B78E5D5-25E2-4775-964A-0E6381C71B93" name="2. Połączenie z konsultantem" sourceRef="sid-3151C455-57D9-4B0A-B594-CD2FC1504107" targetRef="procesPolaczenieZKonsultantem">
+        <!--<conditionExpression xsi:type="tFormalExpression"><![CDATA[${INPUT == 3}]]></conditionExpression>-->
         <conditionExpression xsi:type="tFormalExpression">${INPUT == 3}</conditionExpression>
       </sequenceFlow>
-      <sequenceFlow id="sid-A2914CA2-4690-47E4-A4D0-96BCCA37DDB1" sourceRef="sid-F3F12EE0-9EC7-40E5-9A99-192FEDC0CB07" targetRef="sid-3994B09C-050E-4A94-8DE0-56EB395D76F0"></sequenceFlow>
-      <sequenceFlow id="sid-D482E823-58F0-4874-A24E-E4A9BC139399" sourceRef="sid-8D8B7DEC-F2A4-4150-AC03-2AD152478D27" targetRef="sid-9CEFDC97-F162-4A74-AE3D-3A5FFCD12B5F"></sequenceFlow>
-      <sequenceFlow id="sid-E6419815-0913-43D8-8FE0-30DE1C24B23D" sourceRef="sid-9CEFDC97-F162-4A74-AE3D-3A5FFCD12B5F" targetRef="sid-8C632AC2-FEA0-4713-84D9-3539CFB6611A"></sequenceFlow>
-      <sequenceFlow id="sid-4011DE09-F669-4D6C-9A32-253FB9E40F18" sourceRef="sid-3994B09C-050E-4A94-8DE0-56EB395D76F0" targetRef="sid-8C632AC2-FEA0-4713-84D9-3539CFB6611A"></sequenceFlow>
+      <sequenceFlow id="sid-A2914CA2-4690-47E4-A4D0-96BCCA37DDB1" sourceRef="procesLogowanie" targetRef="procesObslugaAutomatyczna"></sequenceFlow>
+      <sequenceFlow id="sid-D482E823-58F0-4874-A24E-E4A9BC139399" sourceRef="procesPolaczenieZKonsultantem" targetRef="procesObslugaManualna"></sequenceFlow>
+      <sequenceFlow id="sid-E6419815-0913-43D8-8FE0-30DE1C24B23D" sourceRef="procesObslugaManualna" targetRef="sid-8C632AC2-FEA0-4713-84D9-3539CFB6611A"></sequenceFlow>
+      <sequenceFlow id="sid-4011DE09-F669-4D6C-9A32-253FB9E40F18" sourceRef="procesObslugaAutomatyczna" targetRef="sid-8C632AC2-FEA0-4713-84D9-3539CFB6611A"></sequenceFlow>
       <sequenceFlow id="_4" sourceRef="_3" targetRef="sid-EF15FAAF-D877-436A-B29D-2992C23CDDDC"></sequenceFlow>
+      <sequenceFlow id="sid-9F771EC7-669B-4BD1-9A15-114EA926D64A" sourceRef="sid-7BBA176E-8666-4863-A9FA-D3C3AFFB7386" targetRef="sid-E7DB8954-3741-4C81-BAF5-1455353F5FBD"></sequenceFlow>
     </subProcess>
     <endEvent id="sid-567D32B1-97E0-4AB8-BCB6-927B62A086A7"></endEvent>
     <sequenceFlow id="sid-86817C70-0D08-4B3A-AE1F-68D4602527A4" sourceRef="sid-FB7DE2F4-096B-4128-A48F-95FFC694109C" targetRef="sid-567D32B1-97E0-4AB8-BCB6-927B62A086A7"></sequenceFlow>
-    <startEvent id="sid-E5C52330-C68E-4ACB-ACD7-575B74ACC372" name="Numer wybrany przez klienta" >
-      <messageEventDefinition messageRef="NUMER_WYBRANY_PRZEZ_KLIENTA">
-      </messageEventDefinition>
+    <startEvent id="sid-E5C52330-C68E-4ACB-ACD7-575B74ACC372" name="Numer wybrany przez klienta">
+      <messageEventDefinition messageRef="NUMER_WYBRANY_PRZEZ_KLIENTA"></messageEventDefinition>
     </startEvent>
     <boundaryEvent id="_6" name="Rozłącz z systemem" attachedToRef="sid-FB7DE2F4-096B-4128-A48F-95FFC694109C">
       <errorEventDefinition></errorEventDefinition>
@@ -82,16 +79,16 @@
       <bpmndi:BPMNShape bpmnElement="sid-E7DB8954-3741-4C81-BAF5-1455353F5FBD" id="BPMNShape_sid-E7DB8954-3741-4C81-BAF5-1455353F5FBD">
         <omgdc:Bounds height="40.0" width="40.0" x="452.8024978761247" y="385.6252302694569"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="sid-8D8B7DEC-F2A4-4150-AC03-2AD152478D27" id="BPMNShape_sid-8D8B7DEC-F2A4-4150-AC03-2AD152478D27">
+      <bpmndi:BPMNShape bpmnElement="procesPolaczenieZKonsultantem" id="BPMNShape_procesPolaczenieZKonsultantem">
         <omgdc:Bounds height="100.0" width="192.27569739742557" x="663.6666647043738" y="488.74073856041537"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="sid-F3F12EE0-9EC7-40E5-9A99-192FEDC0CB07" id="BPMNShape_sid-F3F12EE0-9EC7-40E5-9A99-192FEDC0CB07">
+      <bpmndi:BPMNShape bpmnElement="procesLogowanie" id="BPMNShape_procesLogowanie">
         <omgdc:Bounds height="124.0" width="234.0" x="902.0" y="195.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="sid-3994B09C-050E-4A94-8DE0-56EB395D76F0" id="BPMNShape_sid-3994B09C-050E-4A94-8DE0-56EB395D76F0">
+      <bpmndi:BPMNShape bpmnElement="procesObslugaAutomatyczna" id="BPMNShape_procesObslugaAutomatyczna">
         <omgdc:Bounds height="100.0" width="165.0" x="1197.0" y="193.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="sid-9CEFDC97-F162-4A74-AE3D-3A5FFCD12B5F" id="BPMNShape_sid-9CEFDC97-F162-4A74-AE3D-3A5FFCD12B5F">
+      <bpmndi:BPMNShape bpmnElement="procesObslugaManualna" id="BPMNShape_procesObslugaManualna">
         <omgdc:Bounds height="100.0" width="189.0" x="1007.3703707519273" y="488.74073856041537"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="sid-EF15FAAF-D877-436A-B29D-2992C23CDDDC" id="BPMNShape_sid-EF15FAAF-D877-436A-B29D-2992C23CDDDC">
@@ -101,7 +98,10 @@
         <omgdc:Bounds height="28.0" width="28.0" x="1532.6499938964844" y="440.79999923706055"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_3" id="BPMNShape__3">
-        <omgdc:Bounds height="30.0" width="30.0" x="1086.7116802989033" y="304.5967063026587"></omgdc:Bounds>
+        <omgdc:Bounds height="30.0" width="30.0" x="1092.2036864595348" y="304.0011930097424"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-7BBA176E-8666-4863-A9FA-D3C3AFFB7386" id="BPMNShape_sid-7BBA176E-8666-4863-A9FA-D3C3AFFB7386">
+        <omgdc:Bounds height="30.0" width="30.0" x="457.61501131376156" y="273.30776549906307"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="sid-567D32B1-97E0-4AB8-BCB6-927B62A086A7" id="BPMNShape_sid-567D32B1-97E0-4AB8-BCB6-927B62A086A7">
         <omgdc:Bounds height="28.0" width="28.0" x="1975.308716913902" y="392.1252302694569"></omgdc:Bounds>
@@ -110,7 +110,7 @@
         <omgdc:Bounds height="30.0" width="30.5" x="122.0" y="57.555555392031124"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_6" id="BPMNShape__6">
-        <omgdc:Bounds height="30.0" width="30.0" x="1463.2747517078808" y="700.4934185557634"></omgdc:Bounds>
+        <omgdc:Bounds height="30.0" width="30.0" x="1480.2656594476136" y="700.4479204662392"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="sid-D482E823-58F0-4874-A24E-E4A9BC139399" id="BPMNEdge_sid-D482E823-58F0-4874-A24E-E4A9BC139399">
         <omgdi:waypoint x="855.9423621017994" y="538.7407385604154"></omgdi:waypoint>
@@ -131,6 +131,10 @@
         <omgdi:waypoint x="1547.0" y="539.0"></omgdi:waypoint>
         <omgdi:waypoint x="1546.7081891823543" y="468.79987828327745"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-9F771EC7-669B-4BD1-9A15-114EA926D64A" id="BPMNEdge_sid-9F771EC7-669B-4BD1-9A15-114EA926D64A">
+        <omgdi:waypoint x="472.6389829777393" y="303.3077463443617"></omgdi:waypoint>
+        <omgdi:waypoint x="472.7705866144737" y="385.65714153110787"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="sid-A2914CA2-4690-47E4-A4D0-96BCCA37DDB1" id="BPMNEdge_sid-A2914CA2-4690-47E4-A4D0-96BCCA37DDB1">
         <omgdi:waypoint x="1136.0" y="250.71209213051822"></omgdi:waypoint>
         <omgdi:waypoint x="1197.0" y="247.4337811900192"></omgdi:waypoint>
@@ -141,7 +145,7 @@
         <omgdi:waypoint x="1546.673129301471" y="440.8000183530366"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_4" id="BPMNEdge__4">
-        <omgdi:waypoint x="1098.5332166622202" y="334.2560844924143"></omgdi:waypoint>
+        <omgdi:waypoint x="1102.5792517639948" y="333.2705519212943"></omgdi:waypoint>
         <omgdi:waypoint x="1091.0" y="369.0"></omgdi:waypoint>
         <omgdi:waypoint x="1184.6117357906758" y="397.10733353842744"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
@@ -155,7 +159,7 @@
         <omgdi:waypoint x="902.0" y="251.68354910565085"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_7" id="BPMNEdge__7">
-        <omgdi:waypoint x="1493.2285424002846" y="716.6699150189023"></omgdi:waypoint>
+        <omgdi:waypoint x="1510.2158686853918" y="716.6690853800216"></omgdi:waypoint>
         <omgdi:waypoint x="1955.0" y="753.0"></omgdi:waypoint>
         <omgdi:waypoint x="1987.9307277137664" y="420.05724899483585"></omgdi:waypoint>
       </bpmndi:BPMNEdge>

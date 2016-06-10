@@ -12,7 +12,6 @@ import javax.annotation.PostConstruct;
 
 
 @Component
-//@Component
 public class ProcessGlownyDelegate implements JavaDelegate {
 
 //    @Autowired

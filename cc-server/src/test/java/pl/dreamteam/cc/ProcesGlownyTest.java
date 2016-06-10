@@ -1,5 +1,9 @@
 package pl.dreamteam.cc;
 
+import com.skype.Call;
+import com.skype.CallAdapter;
+import com.skype.Skype;
+import com.skype.SkypeException;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -20,7 +24,11 @@ import pl.dreamteam.cc.model.Applicant;
 import pl.dreamteam.cc.service.ProcessGlownyDelegate;
 import pl.dreamteam.cc.service.repository.ApplicantRepository;
 import pl.dreamteam.cc.skype.server.CallHandler;
+import pl.dreamteam.cc.skype.server.SkypeUtils;
 
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,7 +70,31 @@ public class ProcesGlownyTest {
 
     @Test
     public void testIncommingCall() {
-        callHandler.onCall("facebook:aruyig");
+//        callHandler.onCall("facebook:aruyig");
+    }
+
+    @Test
+    public void testSkypeAudioInputOnCall() throws SkypeException {
+//        findAvailableMixers();
+        Skype.setDaemon(false);
+        Skype.setDebug(true);
+        Skype.addCallListener(new CallAdapter() {
+            @Override
+            public void callReceived(Call receivedCall) throws SkypeException {
+                try {
+                    SkypeUtils.playSound(SkypeUtils.findVBCableInput());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (UnsupportedAudioFileException e) {
+                    e.printStackTrace();
+                } catch (LineUnavailableException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
     }
 
 }
