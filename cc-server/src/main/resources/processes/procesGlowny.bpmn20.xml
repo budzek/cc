@@ -20,7 +20,7 @@
         <errorEventDefinition></errorEventDefinition>
       </endEvent>
       <endEvent id="sid-8C632AC2-FEA0-4713-84D9-3539CFB6611A"></endEvent>
-      <boundaryEvent id="_3" name="Dwukrotnie błędne dane" attachedToRef="procesLogowanie">
+      <boundaryEvent id="_3" name="Dwukrotnie błędne dane" attachedToRef="callProcesLogowanie">
         <errorEventDefinition></errorEventDefinition>
       </boundaryEvent>
       <boundaryEvent id="processGlownyErrorBlednyWyborEvent" name="Blędny wybór" attachedToRef="odbierzWyborTask">
@@ -34,20 +34,20 @@
       <sequenceFlow id="PierwszyBlednyWyborTAK" name="TAK" sourceRef="gatewayPierwszyBlednyWybor" targetRef="stOdczytajFrazePowitalna">
         <conditionExpression xsi:type="tFormalExpression">${CHOICE_FAILURE_COUNT == 0}</conditionExpression>
       </sequenceFlow>
-      <sequenceFlow id="sid-C68177DF-9285-4454-A63C-79EAC2798BFE" name="1. Logowanie" sourceRef="sid-3151C455-57D9-4B0A-B594-CD2FC1504107" targetRef="procesLogowanie">
+      <sequenceFlow id="sid-C68177DF-9285-4454-A63C-79EAC2798BFE" name="1. Logowanie" sourceRef="sid-3151C455-57D9-4B0A-B594-CD2FC1504107" targetRef="callProcesLogowanie">
         <conditionExpression xsi:type="tFormalExpression">${INPUT == 1}</conditionExpression>
       </sequenceFlow>
       <sequenceFlow id="sid-1391E0EE-0F91-496C-85E1-3EB5C8A73720" sourceRef="odbierzWyborTask" targetRef="sid-3151C455-57D9-4B0A-B594-CD2FC1504107"></sequenceFlow>
-      <sequenceFlow id="PierwszyBlednyWyborNIE" name="NIE" sourceRef="gatewayPierwszyBlednyWybor" targetRef="procesPolaczenieZKonsultantem">
+      <sequenceFlow id="PierwszyBlednyWyborNIE" name="NIE" sourceRef="gatewayPierwszyBlednyWybor" targetRef="callProcesPolaczenieZKonsultantem">
         <conditionExpression xsi:type="tFormalExpression">${CHOICE_FAILURE_COUNT == 1}</conditionExpression>
       </sequenceFlow>
-      <sequenceFlow id="sid-8B78E5D5-25E2-4775-964A-0E6381C71B93" name="2. Połączenie z konsultantem" sourceRef="sid-3151C455-57D9-4B0A-B594-CD2FC1504107" targetRef="procesPolaczenieZKonsultantem">
+      <sequenceFlow id="sid-8B78E5D5-25E2-4775-964A-0E6381C71B93" name="2. Połączenie z konsultantem" sourceRef="sid-3151C455-57D9-4B0A-B594-CD2FC1504107" targetRef="callProcesPolaczenieZKonsultantem">
         <conditionExpression xsi:type="tFormalExpression">${INPUT == 3}</conditionExpression>
       </sequenceFlow>
-      <sequenceFlow id="sid-A2914CA2-4690-47E4-A4D0-96BCCA37DDB1" sourceRef="procesLogowanie" targetRef="procesObslugaAutomatyczna"></sequenceFlow>
-      <sequenceFlow id="sid-D482E823-58F0-4874-A24E-E4A9BC139399" sourceRef="procesPolaczenieZKonsultantem" targetRef="procesObslugaManualna"></sequenceFlow>
-      <sequenceFlow id="sid-E6419815-0913-43D8-8FE0-30DE1C24B23D" sourceRef="procesObslugaManualna" targetRef="sid-8C632AC2-FEA0-4713-84D9-3539CFB6611A"></sequenceFlow>
-      <sequenceFlow id="sid-4011DE09-F669-4D6C-9A32-253FB9E40F18" sourceRef="procesObslugaAutomatyczna" targetRef="sid-8C632AC2-FEA0-4713-84D9-3539CFB6611A"></sequenceFlow>
+      <sequenceFlow id="sid-A2914CA2-4690-47E4-A4D0-96BCCA37DDB1" sourceRef="callProcesLogowanie" targetRef="callProcesObslugaAutomatyczna"></sequenceFlow>
+      <sequenceFlow id="sid-D482E823-58F0-4874-A24E-E4A9BC139399" sourceRef="callProcesPolaczenieZKonsultantem" targetRef="callProcesObslugaManualna"></sequenceFlow>
+      <sequenceFlow id="sid-E6419815-0913-43D8-8FE0-30DE1C24B23D" sourceRef="callProcesObslugaManualna" targetRef="sid-8C632AC2-FEA0-4713-84D9-3539CFB6611A"></sequenceFlow>
+      <sequenceFlow id="sid-4011DE09-F669-4D6C-9A32-253FB9E40F18" sourceRef="callProcesObslugaAutomatyczna" targetRef="sid-8C632AC2-FEA0-4713-84D9-3539CFB6611A"></sequenceFlow>
       <sequenceFlow id="_4" sourceRef="_3" targetRef="sid-EF15FAAF-D877-436A-B29D-2992C23CDDDC"></sequenceFlow>
       <sequenceFlow id="sid-9F771EC7-669B-4BD1-9A15-114EA926D64A" sourceRef="processGlownyErrorBlednyWyborEvent" targetRef="gatewayPierwszyBlednyWybor"></sequenceFlow>
     </subProcess>
@@ -81,16 +81,16 @@
       <bpmndi:BPMNShape bpmnElement="gatewayPierwszyBlednyWybor" id="BPMNShape_gatewayPierwszyBlednyWybor">
         <omgdc:Bounds height="40.0" width="40.0" x="452.8024978761247" y="385.6252302694569"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="procesPolaczenieZKonsultantem" id="BPMNShape_procesPolaczenieZKonsultantem">
+      <bpmndi:BPMNShape bpmnElement="callProcesPolaczenieZKonsultantem" id="BPMNShape_procesPolaczenieZKonsultantem">
         <omgdc:Bounds height="100.0" width="192.27569739742557" x="663.6666647043738" y="488.74073856041537"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="procesLogowanie" id="BPMNShape_procesLogowanie">
+      <bpmndi:BPMNShape bpmnElement="callProcesLogowanie" id="BPMNShape_callProcesLogowanie">
         <omgdc:Bounds height="124.0" width="234.0" x="902.0" y="195.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="procesObslugaAutomatyczna" id="BPMNShape_procesObslugaAutomatyczna">
+      <bpmndi:BPMNShape bpmnElement="callProcesObslugaAutomatyczna" id="BPMNShape_callProcesObslugaAutomatyczna">
         <omgdc:Bounds height="100.0" width="165.0" x="1197.0" y="193.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="procesObslugaManualna" id="BPMNShape_procesObslugaManualna">
+      <bpmndi:BPMNShape bpmnElement="callProcesObslugaManualna" id="BPMNShape_callProcesObslugaManualna">
         <omgdc:Bounds height="100.0" width="189.0" x="1007.3703707519273" y="488.74073856041537"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="sid-EF15FAAF-D877-436A-B29D-2992C23CDDDC" id="BPMNShape_sid-EF15FAAF-D877-436A-B29D-2992C23CDDDC">
