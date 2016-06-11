@@ -3,7 +3,7 @@ package pl.dreamteam.cc.exception;
 /**
  * Created by abu on 09.06.2016.
  */
-public class ChoiceFailureException extends RuntimeException{
+public class ChoiceFailureException extends Exception{
     public ChoiceFailureException() {
         super();
     }

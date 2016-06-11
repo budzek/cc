@@ -31,7 +31,7 @@ public enum PROCESS {
         return Arrays.stream(values()).filter(p -> p.processId.equals(processId)).findFirst().orElseThrow(() -> new RuntimeException("No PROCESS found for :" + processId));
     }
     
-    public Message getMessage(String id){
+    public Message getMessage(String id) throws ChoiceFailureException{
         Message msg = map.get(id);
 
         if(msg == null)

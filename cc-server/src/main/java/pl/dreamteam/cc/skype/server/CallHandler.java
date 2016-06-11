@@ -7,14 +7,10 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.stereotype.Component;
-import pl.dreamteam.cc.model.Caller;
+import pl.dreamteam.cc.service.ActivitiFacadeImpl;
 import pl.dreamteam.cc.service.MessageService;
-import pl.dreamteam.cc.service.repository.CallerRepository;
 
 import javax.annotation.PostConstruct;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
-import java.io.IOException;
 
 /**
  * Created by abu on 23.05.2016.
