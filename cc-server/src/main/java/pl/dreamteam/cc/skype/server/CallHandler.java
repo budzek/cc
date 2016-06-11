@@ -69,18 +69,27 @@ public class CallHandler implements org.springframework.context.ApplicationListe
 
     public void onCall(Call receivedCall) throws SkypeException {
         receivedCall.answer();
-        activitiFacade.startKolejkaGlownaProcess(receivedCall.getPartnerId());
+        onCall(receivedCall.getPartnerId());
+    }
+
+    public void onCall(String skypeId){
+        activitiFacade.startKolejkaGlownaProcess(skypeId);
     }
 
     public void onMessage(ChatMessage received) throws SkypeException {
         LOGGER.info("RECEIVED FROM: " + received.getSenderDisplayName() + "[" + received.getSenderId() + "] MSG: " + received.getContent());
 
         if (received.getType().equals(ChatMessage.Type.SAID)) {
-            messageService.translate(received.getSenderId(), received.getContent());
+            onMessage(received.getSenderId(), received.getContent());
         }  else {
             LOGGER.info(received.getType());
         }
     }
+    public void onMessage(String skypeId, String input){
+//        messageService.translate(skypeId, input);
+        messageService.translate(skypeId, input);
+    }
+
 
     public void forwardCall(Call receivedCall) throws SkypeException {
         Profile.CallForwardingRule[] oldRules = Skype.getProfile().getAllCallForwardingRules();

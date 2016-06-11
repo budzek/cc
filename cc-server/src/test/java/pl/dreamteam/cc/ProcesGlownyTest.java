@@ -68,33 +68,15 @@ public class ProcesGlownyTest {
 //        wiser.stop();
 //    }
 
-    @Test
-    public void testIncommingCall() {
-//        callHandler.onCall("facebook:aruyig");
-    }
 
     @Test
-    public void testSkypeAudioInputOnCall() throws SkypeException {
-//        findAvailableMixers();
-        Skype.setDaemon(false);
-        Skype.setDebug(true);
-        Skype.addCallListener(new CallAdapter() {
-            @Override
-            public void callReceived(Call receivedCall) throws SkypeException {
-                try {
-                    SkypeUtils.playSound(SkypeUtils.findVBCableInput());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (UnsupportedAudioFileException e) {
-                    e.printStackTrace();
-                } catch (LineUnavailableException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        });
+    public void doubleWrongChoiceTest(){
+        String skypeId = "testSkypeId";
+        String msg = "stupid choice";
+        callHandler.onCall(skypeId);
+        callHandler.onMessage(skypeId, msg);
+        callHandler.onMessage(skypeId, msg);
     }
+
 
 }
