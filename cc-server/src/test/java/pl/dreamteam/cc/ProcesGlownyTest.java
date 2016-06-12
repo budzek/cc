@@ -9,10 +9,7 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.IntegrationTest;
@@ -29,6 +26,7 @@ import pl.dreamteam.cc.skype.server.SkypeUtils;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,13 +67,28 @@ public class ProcesGlownyTest {
 //    }
 
 
+    @Ignore
     @Test
-    public void doubleWrongChoiceTest(){
+    public void doubleWrongChoiceTest() {
         String skypeId = "testSkypeId";
         String msg = "stupid choice";
         callHandler.onCall(skypeId);
         callHandler.onMessage(skypeId, msg);
         callHandler.onMessage(skypeId, msg);
+    }
+
+    @Test
+    public void allGoodChoiceTest() {
+        String skypeId = "testSkypeId";
+//        String msgs[] = {"1", "2", "3"};
+        String msgs[] = {"1"};
+
+        Arrays.stream(msgs).forEach(msg -> {
+            callHandler.onCall(skypeId);
+            callHandler.onMessage(skypeId, msg);
+            callHandler.onMessage(skypeId, msg);
+        });
+
     }
 
 
