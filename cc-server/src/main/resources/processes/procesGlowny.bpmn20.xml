@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef">
+  <error id="myError" errorCode="error123" />
   <message id="NUMER_WYBRANY_PRZEZ_KLIENTA" name="http://www.activiti.org/processdef:NUMER_WYBRANY_PRZEZ_KLIENTA"></message>
-  <error id="processGlownyErrorBlednyWybor" errorCode="processGlownyErrorBlednyWybor" />
-
   <process id="procesGlowny" isExecutable="true">
     <sequenceFlow id="sid-9E3AE874-F06F-4DFB-BFA1-0D9470FF54FB" sourceRef="sid-E5C52330-C68E-4ACB-ACD7-575B74ACC372" targetRef="sid-FB7DE2F4-096B-4128-A48F-95FFC694109C"></sequenceFlow>
     <subProcess id="sid-FB7DE2F4-096B-4128-A48F-95FFC694109C" name="Kolejka główna">
@@ -11,11 +10,10 @@
       <startEvent id="startEventMy"></startEvent>
       <exclusiveGateway id="sid-3151C455-57D9-4B0A-B594-CD2FC1504107"></exclusiveGateway>
       <exclusiveGateway id="gatewayPierwszyBlednyWybor" name="Pierwszy błędny wybór ?"></exclusiveGateway>
-      <callActivity id="callCheckCreditProcess" name="Check credit" calledElement="checkCreditProcess" />
-      <callActivity id="callProcesPolaczenieZKonsultantem" calledElement="procesPolaczenieZKonsultantem" name="Połączenie z konsultantem"></callActivity>
-      <callActivity id="callProcesLogowanie" calledElement="procesLogowanie" name="Logowanie"></callActivity>
-      <callActivity id="callProcesObslugaAutomatyczna" calledElement="procesObslugaAutomatyczna" name="Obsługa automatyczna"></callActivity>
-      <callActivity id="callProcesObslugaManualna" calledElement="procesObslugaManualna" name="Obsługa manualna"></callActivity>
+      <callActivity id="callProcesPolaczenieZKonsultantem" name="Połączenie z konsultantem" calledElement="procesPolaczenieZKonsultantem"></callActivity>
+      <callActivity id="callProcesLogowanie" name="Logowanie" calledElement="procesLogowanie"></callActivity>
+      <callActivity id="callProcesObslugaAutomatyczna" name="Obsługa automatyczna" calledElement="procesObslugaAutomatyczna"></callActivity>
+      <callActivity id="callProcesObslugaManualna" name="Obsługa manualna" calledElement="procesObslugaManualna"></callActivity>
       <endEvent id="sid-EF15FAAF-D877-436A-B29D-2992C23CDDDC" name="Rozłącz z systemem">
         <errorEventDefinition></errorEventDefinition>
       </endEvent>
@@ -24,7 +22,16 @@
         <errorEventDefinition></errorEventDefinition>
       </boundaryEvent>
       <boundaryEvent id="processGlownyErrorBlednyWyborEvent" name="Blędny wybór" attachedToRef="odbierzWyborTask">
-        <errorEventDefinition errorRef="processGlownyErrorBlednyWybor"/>
+        <errorEventDefinition errorRef="processGlownyErrorBlednyWybor"></errorEventDefinition>
+      </boundaryEvent>
+      <boundaryEvent id="sid-79A75EDF-AB1C-4095-ADE1-F9CE2DA44EFA" name="Polacz z konosultantem" attachedToRef="callProcesObslugaAutomatyczna">
+        <errorEventDefinition></errorEventDefinition>
+      </boundaryEvent>
+      <boundaryEvent id="sid-352B2FE6-36A5-428D-8975-0F63C9504B2A" name="Powrot" attachedToRef="callProcesObslugaAutomatyczna">
+        <errorEventDefinition></errorEventDefinition>
+      </boundaryEvent>
+      <boundaryEvent id="sid-5D56BB51-F3A1-486A-9298-46E0D0D3C2A8" name="Przerwanie rozmowy" attachedToRef="callProcesObslugaManualna">
+        <errorEventDefinition></errorEventDefinition>
       </boundaryEvent>
       <sequenceFlow id="sid-63473DDD-2BAA-4C41-BD6A-92762CDC2A94" sourceRef="startEventMy" targetRef="stOdczytajFrazePowitalna"></sequenceFlow>
       <sequenceFlow id="sid-F2874C47-5EDE-4B62-AE42-A66F02C6124C" sourceRef="stOdczytajFrazePowitalna" targetRef="odbierzWyborTask"></sequenceFlow>
@@ -50,6 +57,9 @@
       <sequenceFlow id="sid-4011DE09-F669-4D6C-9A32-253FB9E40F18" sourceRef="callProcesObslugaAutomatyczna" targetRef="sid-8C632AC2-FEA0-4713-84D9-3539CFB6611A"></sequenceFlow>
       <sequenceFlow id="_4" sourceRef="_3" targetRef="sid-EF15FAAF-D877-436A-B29D-2992C23CDDDC"></sequenceFlow>
       <sequenceFlow id="sid-9F771EC7-669B-4BD1-9A15-114EA926D64A" sourceRef="processGlownyErrorBlednyWyborEvent" targetRef="gatewayPierwszyBlednyWybor"></sequenceFlow>
+      <sequenceFlow id="sid-22A58CBB-6A57-4F87-8292-861245C4151C" sourceRef="sid-5D56BB51-F3A1-486A-9298-46E0D0D3C2A8" targetRef="sid-EF15FAAF-D877-436A-B29D-2992C23CDDDC"></sequenceFlow>
+      <sequenceFlow id="sid-1B5C770F-2051-465E-B8A5-080E3193E71B" sourceRef="sid-79A75EDF-AB1C-4095-ADE1-F9CE2DA44EFA" targetRef="callProcesPolaczenieZKonsultantem"></sequenceFlow>
+      <sequenceFlow id="sid-AD4BA7E2-650F-4B80-A6EB-6D9511D3F78C" sourceRef="sid-352B2FE6-36A5-428D-8975-0F63C9504B2A" targetRef="stOdczytajFrazePowitalna"></sequenceFlow>
     </subProcess>
     <endEvent id="sid-567D32B1-97E0-4AB8-BCB6-927B62A086A7"></endEvent>
     <sequenceFlow id="sid-86817C70-0D08-4B3A-AE1F-68D4602527A4" sourceRef="sid-FB7DE2F4-096B-4128-A48F-95FFC694109C" targetRef="sid-567D32B1-97E0-4AB8-BCB6-927B62A086A7"></sequenceFlow>
@@ -81,7 +91,7 @@
       <bpmndi:BPMNShape bpmnElement="gatewayPierwszyBlednyWybor" id="BPMNShape_gatewayPierwszyBlednyWybor">
         <omgdc:Bounds height="40.0" width="40.0" x="452.8024978761247" y="385.6252302694569"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="callProcesPolaczenieZKonsultantem" id="BPMNShape_procesPolaczenieZKonsultantem">
+      <bpmndi:BPMNShape bpmnElement="callProcesPolaczenieZKonsultantem" id="BPMNShape_callProcesPolaczenieZKonsultantem">
         <omgdc:Bounds height="100.0" width="192.27569739742557" x="663.6666647043738" y="488.74073856041537"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="callProcesLogowanie" id="BPMNShape_callProcesLogowanie">
@@ -100,10 +110,19 @@
         <omgdc:Bounds height="28.0" width="28.0" x="1532.6499938964844" y="440.79999923706055"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_3" id="BPMNShape__3">
-        <omgdc:Bounds height="30.0" width="30.0" x="1092.2036864595348" y="304.0011930097424"></omgdc:Bounds>
+        <omgdc:Bounds height="30.0" width="30.0" x="1112.2703008059786" y="304.4562065782632"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="processGlownyErrorBlednyWyborEvent" id="BPMNShape_processGlownyErrorBlednyWyborEvent">
-        <omgdc:Bounds height="30.0" width="30.0" x="457.61501131376156" y="273.30776549906307"></omgdc:Bounds>
+        <omgdc:Bounds height="30.0" width="30.0" x="427.1535312046623" y="273.76173466962626"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-79A75EDF-AB1C-4095-ADE1-F9CE2DA44EFA" id="BPMNShape_sid-79A75EDF-AB1C-4095-ADE1-F9CE2DA44EFA">
+        <omgdc:Bounds height="30.0" width="30.0" x="1246.5216802133873" y="278.80589274516467"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-352B2FE6-36A5-428D-8975-0F63C9504B2A" id="BPMNShape_sid-352B2FE6-36A5-428D-8975-0F63C9504B2A">
+        <omgdc:Bounds height="30.0" width="30.0" x="1245.0258421187348" y="177.300176206003"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-5D56BB51-F3A1-486A-9298-46E0D0D3C2A8" id="BPMNShape_sid-5D56BB51-F3A1-486A-9298-46E0D0D3C2A8">
+        <omgdc:Bounds height="30.0" width="30.0" x="1144.726013049783" y="473.6242559577025"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="sid-567D32B1-97E0-4AB8-BCB6-927B62A086A7" id="BPMNShape_sid-567D32B1-97E0-4AB8-BCB6-927B62A086A7">
         <omgdc:Bounds height="28.0" width="28.0" x="1975.308716913902" y="392.1252302694569"></omgdc:Bounds>
@@ -112,7 +131,7 @@
         <omgdc:Bounds height="30.0" width="30.5" x="122.0" y="57.555555392031124"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_6" id="BPMNShape__6">
-        <omgdc:Bounds height="30.0" width="30.0" x="1480.2656594476136" y="700.4479204662392"></omgdc:Bounds>
+        <omgdc:Bounds height="30.0" width="30.0" x="1517.1481614777047" y="700.3173381786048"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="sid-D482E823-58F0-4874-A24E-E4A9BC139399" id="BPMNEdge_sid-D482E823-58F0-4874-A24E-E4A9BC139399">
         <omgdi:waypoint x="855.9423621017994" y="538.7407385604154"></omgdi:waypoint>
@@ -124,6 +143,10 @@
         <omgdi:waypoint x="287.0" y="178.0"></omgdi:waypoint>
         <omgdi:waypoint x="287.0" y="208.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-1B5C770F-2051-465E-B8A5-080E3193E71B" id="BPMNEdge_sid-1B5C770F-2051-465E-B8A5-080E3193E71B">
+        <omgdi:waypoint x="1248.0422160795629" y="300.3864737730784"></omgdi:waypoint>
+        <omgdi:waypoint x="855.9423621017994" y="491.8069067010554"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="sid-F2874C47-5EDE-4B62-AE42-A66F02C6124C" id="BPMNEdge_sid-F2874C47-5EDE-4B62-AE42-A66F02C6124C">
         <omgdi:waypoint x="337.0" y="248.0"></omgdi:waypoint>
         <omgdi:waypoint x="402.0" y="248.0"></omgdi:waypoint>
@@ -134,8 +157,8 @@
         <omgdi:waypoint x="1546.7081891823543" y="468.79987828327745"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="sid-9F771EC7-669B-4BD1-9A15-114EA926D64A" id="BPMNEdge_sid-9F771EC7-669B-4BD1-9A15-114EA926D64A">
-        <omgdi:waypoint x="472.6389829777393" y="303.3077463443617"></omgdi:waypoint>
-        <omgdi:waypoint x="472.7705866144737" y="385.65714153110787"></omgdi:waypoint>
+        <omgdi:waypoint x="445.95878550811403" y="303.2710433949261"></omgdi:waypoint>
+        <omgdi:waypoint x="468.6470568781844" y="389.78067126739717"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="sid-A2914CA2-4690-47E4-A4D0-96BCCA37DDB1" id="BPMNEdge_sid-A2914CA2-4690-47E4-A4D0-96BCCA37DDB1">
         <omgdi:waypoint x="1136.0" y="250.71209213051822"></omgdi:waypoint>
@@ -146,29 +169,33 @@
         <omgdi:waypoint x="1547.0" y="243.0"></omgdi:waypoint>
         <omgdi:waypoint x="1546.673129301471" y="440.8000183530366"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-22A58CBB-6A57-4F87-8292-861245C4151C" id="BPMNEdge_sid-22A58CBB-6A57-4F87-8292-861245C4151C">
+        <omgdi:waypoint x="1165.740546154899" y="474.8828807889843"></omgdi:waypoint>
+        <omgdi:waypoint x="1192.40680041697" y="413.9586165517707"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="PierwszyBlednyWyborTAK" id="BPMNEdge_PierwszyBlednyWyborTAK">
+        <omgdi:waypoint x="452.8427573272769" y="405.6654897206091"></omgdi:waypoint>
+        <omgdi:waypoint x="287.0" y="406.0"></omgdi:waypoint>
+        <omgdi:waypoint x="287.0" y="288.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_4" id="BPMNEdge__4">
-        <omgdi:waypoint x="1102.5792517639948" y="333.2705519212943"></omgdi:waypoint>
+        <omgdi:waypoint x="1118.409668727759" y="331.55947882895737"></omgdi:waypoint>
         <omgdi:waypoint x="1091.0" y="369.0"></omgdi:waypoint>
         <omgdi:waypoint x="1184.6117357906758" y="397.10733353842744"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-C68177DF-9285-4454-A63C-79EAC2798BFE" id="BPMNEdge_sid-C68177DF-9285-4454-A63C-79EAC2798BFE">
+        <omgdi:waypoint x="778.9352189041903" y="246.09151606702096"></omgdi:waypoint>
+        <omgdi:waypoint x="902.0" y="251.68354910565085"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="PierwszyBlednyWyborNIE" id="BPMNEdge_PierwszyBlednyWyborNIE">
         <omgdi:waypoint x="472.8320701999511" y="425.5956579456305"></omgdi:waypoint>
         <omgdi:waypoint x="473.0" y="539.0"></omgdi:waypoint>
         <omgdi:waypoint x="663.6666647043738" y="538.8276438770592"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="sid-C68177DF-9285-4454-A63C-79EAC2798BFE" id="BPMNEdge_sid-C68177DF-9285-4454-A63C-79EAC2798BFE">
-        <omgdi:waypoint x="778.9352189041903" y="246.09151606702096"></omgdi:waypoint>
-        <omgdi:waypoint x="902.0" y="251.68354910565085"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_7" id="BPMNEdge__7">
-        <omgdi:waypoint x="1510.2158686853918" y="716.6690853800216"></omgdi:waypoint>
+        <omgdi:waypoint x="1547.0889520867586" y="716.6487945152563"></omgdi:waypoint>
         <omgdi:waypoint x="1955.0" y="753.0"></omgdi:waypoint>
         <omgdi:waypoint x="1987.9307277137664" y="420.05724899483585"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="PierwszyBlednyWyborTAK" id="BPMNEdge_PierwszyBlednyWyborTAK">
-        <omgdi:waypoint x="452.8427573272769" y="405.6654897206091"></omgdi:waypoint>
-        <omgdi:waypoint x="287.0" y="406.0"></omgdi:waypoint>
-        <omgdi:waypoint x="287.0" y="288.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="sid-1391E0EE-0F91-496C-85E1-3EB5C8A73720" id="BPMNEdge_sid-1391E0EE-0F91-496C-85E1-3EB5C8A73720">
         <omgdi:waypoint x="502.0" y="247.54877555218988"></omgdi:waypoint>
@@ -177,6 +204,10 @@
       <bpmndi:BPMNEdge bpmnElement="sid-8B78E5D5-25E2-4775-964A-0E6381C71B93" id="BPMNEdge_sid-8B78E5D5-25E2-4775-964A-0E6381C71B93">
         <omgdi:waypoint x="759.8045134030866" y="265.2222215681246"></omgdi:waypoint>
         <omgdi:waypoint x="759.8045134030866" y="488.74073856041537"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-AD4BA7E2-650F-4B80-A6EB-6D9511D3F78C" id="BPMNEdge_sid-AD4BA7E2-650F-4B80-A6EB-6D9511D3F78C">
+        <omgdi:waypoint x="1245.0503583896739" y="193.15743175753312"></omgdi:waypoint>
+        <omgdi:waypoint x="337.0" y="245.13780346919089"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="sid-86817C70-0D08-4B3A-AE1F-68D4602527A4" id="BPMNEdge_sid-86817C70-0D08-4B3A-AE1F-68D4602527A4">
         <omgdi:waypoint x="1676.2137801117049" y="415.6401085719207"></omgdi:waypoint>

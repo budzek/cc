@@ -1,5 +1,102 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef">
+  <error id="errorNiezalogowany" errorCode="AUTH_FAILURE" />
   <process id="procesLogowanie" isExecutable="true">
+    <startEvent id="startEvent"></startEvent>
+    <receiveTask id="odbierzIdentyfikatorReceiveTask" name="Odbierz 
+identyfikator"></receiveTask>
+    <receiveTask id="odbierzHasloReceiveTask" name="Odbierz hasło"></receiveTask>
+    <sequenceFlow id="sid-FD00AABF-9EB5-4607-9DB2-30DBADF9403D" sourceRef="startEvent" targetRef="odbierzIdentyfikatorReceiveTask"></sequenceFlow>
+    <serviceTask id="checkCredentialsServiceTask" name="Sprawdzenie poprawnosci wprowadzonych  danych" activiti:expression="#{System.out.println('Sprawdzenie poprawnosci wprowadzonych  danych')}"></serviceTask>
+    <exclusiveGateway id="sid-6FE25323-D508-4097-BBDB-05C926E0BA67" name="Dane poprawne?"></exclusiveGateway>
+    <exclusiveGateway id="logowanieDrugaProba" name="Druga proba?"></exclusiveGateway>
+    <endEvent id="endEventNormal"></endEvent>
+    <endEvent id="endErrorEventDwukrotnieBledneDane" name="Dwukrotnie błedne dane">
+      <errorEventDefinition errorRef="errorNiezalogowany"></errorEventDefinition>
+    </endEvent>
+    <sequenceFlow id="odbierzIdentyfikatorOdbierzHaslo" sourceRef="odbierzIdentyfikatorReceiveTask" targetRef="odbierzHasloReceiveTask"></sequenceFlow>
+    <sequenceFlow id="odbierzHasloCheckCredentials" sourceRef="odbierzHasloReceiveTask" targetRef="checkCredentialsServiceTask"></sequenceFlow>
+    <sequenceFlow id="credentialsValid" sourceRef="checkCredentialsServiceTask" targetRef="sid-6FE25323-D508-4097-BBDB-05C926E0BA67"></sequenceFlow>
+    <sequenceFlow id="danePoprawneNie" name="nie " sourceRef="sid-6FE25323-D508-4097-BBDB-05C926E0BA67" targetRef="logowanieDrugaProba">
+      <conditionExpression xsi:type="tFormalExpression">${LOGOWANE_DANE_POPRAWNE == false}></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="logowanieDrugaProbaNie" name="nie
+" sourceRef="logowanieDrugaProba" targetRef="odbierzIdentyfikatorReceiveTask">
+      <conditionExpression xsi:type="tFormalExpression">${LOGOWANE_DRUGA_PROBA == false}></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="logowanieDrugaProbaTak" name="tak
+" sourceRef="logowanieDrugaProba" targetRef="endErrorEventDwukrotnieBledneDane">
+      <conditionExpression xsi:type="tFormalExpression">${LOGOWANE_DRUGA_PROBA == true}></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="danePoprawneTak" name="tak" sourceRef="sid-6FE25323-D508-4097-BBDB-05C926E0BA67" targetRef="endEventNormal">
+      <conditionExpression xsi:type="tFormalExpression">${LOGOWANE_DANE_POPRAWNE == true}></conditionExpression>
+    </sequenceFlow>
   </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_danePoprawneTak">
+    <bpmndi:BPMNPlane bpmnElement="procesLogowanie" id="BPMNPlane_danePoprawneTak">
+      <bpmndi:BPMNShape bpmnElement="startEvent" id="BPMNShape_startEvent">
+        <omgdc:Bounds height="30.0" width="30.0" x="88.5" y="217.5"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="odbierzIdentyfikatorReceiveTask" id="BPMNShape_odbierzIdentyfikatorReceiveTask">
+        <omgdc:Bounds height="80.0" width="100.0" x="225.0" y="165.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="odbierzHasloReceiveTask" id="BPMNShape_odbierzHasloReceiveTask">
+        <omgdc:Bounds height="80.0" width="100.0" x="450.0" y="192.5"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="checkCredentialsServiceTask" id="BPMNShape_checkCredentialsServiceTask">
+        <omgdc:Bounds height="81.0" width="145.0" x="630.0" y="192.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-6FE25323-D508-4097-BBDB-05C926E0BA67" id="BPMNShape_sid-6FE25323-D508-4097-BBDB-05C926E0BA67">
+        <omgdc:Bounds height="40.0" width="40.0" x="904.5" y="212.5"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="logowanieDrugaProba" id="BPMNShape_logowanieDrugaProba">
+        <omgdc:Bounds height="40.0" width="40.0" x="480.0" y="329.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endEventNormal" id="BPMNShape_endEventNormal">
+        <omgdc:Bounds height="28.0" width="28.0" x="1048.5" y="218.5"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endErrorEventDwukrotnieBledneDane" id="BPMNShape_endErrorEventDwukrotnieBledneDane">
+        <omgdc:Bounds height="28.0" width="28.0" x="1048.75" y="397.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="logowanieDrugaProbaTak" id="BPMNEdge_logowanieDrugaProbaTak">
+        <omgdi:waypoint x="500.0" y="369.0"></omgdi:waypoint>
+        <omgdi:waypoint x="500.0" y="411.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1048.75" y="411.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="logowanieDrugaProbaNie" id="BPMNEdge_logowanieDrugaProbaNie">
+        <omgdi:waypoint x="480.0" y="349.0"></omgdi:waypoint>
+        <omgdi:waypoint x="275.0" y="349.0"></omgdi:waypoint>
+        <omgdi:waypoint x="275.0" y="245.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="odbierzIdentyfikatorOdbierzHaslo" id="BPMNEdge_odbierzIdentyfikatorOdbierzHaslo">
+        <omgdi:waypoint x="325.0" y="205.0"></omgdi:waypoint>
+        <omgdi:waypoint x="387.5" y="205.0"></omgdi:waypoint>
+        <omgdi:waypoint x="387.5" y="232.5"></omgdi:waypoint>
+        <omgdi:waypoint x="450.0" y="232.5"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-FD00AABF-9EB5-4607-9DB2-30DBADF9403D" id="BPMNEdge_sid-FD00AABF-9EB5-4607-9DB2-30DBADF9403D">
+        <omgdi:waypoint x="118.5" y="232.5"></omgdi:waypoint>
+        <omgdi:waypoint x="171.75" y="232.5"></omgdi:waypoint>
+        <omgdi:waypoint x="171.75" y="205.0"></omgdi:waypoint>
+        <omgdi:waypoint x="225.0" y="205.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="credentialsValid" id="BPMNEdge_credentialsValid">
+        <omgdi:waypoint x="775.0" y="232.5"></omgdi:waypoint>
+        <omgdi:waypoint x="904.5" y="232.5"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="danePoprawneNie" id="BPMNEdge_danePoprawneNie">
+        <omgdi:waypoint x="924.1380090497737" y="252.13800904977376"></omgdi:waypoint>
+        <omgdi:waypoint x="922.5" y="341.0"></omgdi:waypoint>
+        <omgdi:waypoint x="519.6283391405343" y="348.62833914053425"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="danePoprawneTak" id="BPMNEdge_danePoprawneTak">
+        <omgdi:waypoint x="944.5" y="232.5"></omgdi:waypoint>
+        <omgdi:waypoint x="1048.5" y="232.5"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="odbierzHasloCheckCredentials" id="BPMNEdge_odbierzHasloCheckCredentials">
+        <omgdi:waypoint x="550.0" y="232.5"></omgdi:waypoint>
+        <omgdi:waypoint x="630.0" y="232.5"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
 </definitions>

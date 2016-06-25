@@ -89,7 +89,21 @@ public class MessageService {
                         processDefinitionId));
 
             }
+        } else if (acitiviyIds.contains(ACTIVITY.PROCES_LOGOWANIE_ODBIERZ_IDENTYFIKATOR_TASK.getActivityId())) {
+            String activityId = ACTIVITY.PROCES_GLOWNY_ODBIERZ_WYBOR_TASK.getActivityId();
+            Execution execution = findExecution(processInstanceId, activityId);
+
+            runtimeService.setVariable(processInstanceId, VARS.LOGIN.name(), input);
+            runtimeService.signal(execution.getId());
+        } else if (acitiviyIds.contains(ACTIVITY.PROCES_LOGOWANIE_ODBIERZ_HASLO_TASK.getActivityId())) {
+            String activityId = ACTIVITY.PROCES_LOGOWANIE_ODBIERZ_HASLO_TASK.getActivityId();
+            Execution execution = findExecution(processInstanceId, activityId);
+
+            runtimeService.setVariable(processInstanceId, VARS.HASLO.name(), input);
+            runtimeService.signal(execution.getId());
         }
+
+
     }
 
     public Execution findExecution(String processId, String activityId) {

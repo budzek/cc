@@ -8,7 +8,9 @@ import java.util.Arrays;
  * The class contains ids of activities, to which messages must be dispatched.
  */
 public enum ACTIVITY {
-    PROCES_GLOWNY_ODBIERZ_WYBOR_TASK("odbierzWyborTask");
+    PROCES_GLOWNY_ODBIERZ_WYBOR_TASK("odbierzWyborTask"),
+    PROCES_LOGOWANIE_ODBIERZ_IDENTYFIKATOR_TASK("odbierzIdentyfikatorReceiveTask"),
+    PROCES_LOGOWANIE_ODBIERZ_HASLO_TASK("odbierzHasloReceiveTask");
 
     private final String activityId;
 
