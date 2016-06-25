@@ -8,7 +8,7 @@
     <subProcess id="sid-FB7DE2F4-096B-4128-A48F-95FFC694109C" name="Kolejka główna">
       <serviceTask id="stOdczytajFrazePowitalna" name="Odczytaj frazę powitalnę i dostępne opcje" activiti:expression="#{soundService.playWelcomePhrase()}"></serviceTask>
       <receiveTask id="odbierzWyborTask" name="Odbierz wybór"></receiveTask>
-      <startEvent id="sid-E04FA81B-4E0F-419E-A07E-F6AD769FCB7E"></startEvent>
+      <startEvent id="startEventMy"></startEvent>
       <exclusiveGateway id="sid-3151C455-57D9-4B0A-B594-CD2FC1504107"></exclusiveGateway>
       <exclusiveGateway id="gatewayPierwszyBlednyWybor" name="Pierwszy błędny wybór ?"></exclusiveGateway>
       <callActivity id="callCheckCreditProcess" name="Check credit" calledElement="checkCreditProcess" />
@@ -26,7 +26,7 @@
       <boundaryEvent id="processGlownyErrorBlednyWyborEvent" name="Blędny wybór" attachedToRef="odbierzWyborTask">
         <errorEventDefinition errorRef="processGlownyErrorBlednyWybor"/>
       </boundaryEvent>
-      <sequenceFlow id="sid-63473DDD-2BAA-4C41-BD6A-92762CDC2A94" sourceRef="sid-E04FA81B-4E0F-419E-A07E-F6AD769FCB7E" targetRef="stOdczytajFrazePowitalna"></sequenceFlow>
+      <sequenceFlow id="sid-63473DDD-2BAA-4C41-BD6A-92762CDC2A94" sourceRef="startEventMy" targetRef="stOdczytajFrazePowitalna"></sequenceFlow>
       <sequenceFlow id="sid-F2874C47-5EDE-4B62-AE42-A66F02C6124C" sourceRef="stOdczytajFrazePowitalna" targetRef="odbierzWyborTask"></sequenceFlow>
       <sequenceFlow id="sid-8D0B4D1D-1FAD-45F6-A4E4-F7D88ED52628" name="3. Powtórz powitanie" sourceRef="sid-3151C455-57D9-4B0A-B594-CD2FC1504107" targetRef="stOdczytajFrazePowitalna">
         <conditionExpression xsi:type="tFormalExpression">${INPUT == 3}</conditionExpression>
@@ -72,7 +72,7 @@
       <bpmndi:BPMNShape bpmnElement="odbierzWyborTask" id="BPMNShape_odbierzWyborTask">
         <omgdc:Bounds height="80.0" width="100.0" x="402.0" y="208.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="sid-E04FA81B-4E0F-419E-A07E-F6AD769FCB7E" id="BPMNShape_sid-E04FA81B-4E0F-419E-A07E-F6AD769FCB7E">
+      <bpmndi:BPMNShape bpmnElement="startEventMy" id="BPMNShape_startEventMy">
         <omgdc:Bounds height="30.0" width="30.0" x="147.0" y="298.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="sid-3151C455-57D9-4B0A-B594-CD2FC1504107" id="BPMNShape_sid-3151C455-57D9-4B0A-B594-CD2FC1504107">
