@@ -7,7 +7,7 @@
 identyfikator"></receiveTask>
     <receiveTask id="odbierzHasloReceiveTask" name="Odbierz hasło"></receiveTask>
     <sequenceFlow id="sid-FD00AABF-9EB5-4607-9DB2-30DBADF9403D" sourceRef="startEvent" targetRef="odbierzIdentyfikatorReceiveTask"></sequenceFlow>
-    <serviceTask id="checkCredentialsServiceTask" name="Sprawdzenie poprawnosci wprowadzonych  danych" activiti:expression="#{System.out.println('Sprawdzenie poprawnosci wprowadzonych  danych')}"></serviceTask>
+    <serviceTask id="checkCredentialsServiceTask" name="Sprawdzenie poprawnosci wprowadzonych  danych" activiti:expression="#{logowanieDelegate.execute(execution)}"></serviceTask>
     <exclusiveGateway id="sid-6FE25323-D508-4097-BBDB-05C926E0BA67" name="Dane poprawne?"></exclusiveGateway>
     <exclusiveGateway id="logowanieDrugaProba" name="Druga proba?"></exclusiveGateway>
     <endEvent id="endEventNormal"></endEvent>
@@ -18,18 +18,18 @@ identyfikator"></receiveTask>
     <sequenceFlow id="odbierzHasloCheckCredentials" sourceRef="odbierzHasloReceiveTask" targetRef="checkCredentialsServiceTask"></sequenceFlow>
     <sequenceFlow id="credentialsValid" sourceRef="checkCredentialsServiceTask" targetRef="sid-6FE25323-D508-4097-BBDB-05C926E0BA67"></sequenceFlow>
     <sequenceFlow id="danePoprawneNie" name="nie " sourceRef="sid-6FE25323-D508-4097-BBDB-05C926E0BA67" targetRef="logowanieDrugaProba">
-      <conditionExpression xsi:type="tFormalExpression">${LOGOWANE_DANE_POPRAWNE == false}></conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression">${LOGOWANE_DANE_POPRAWNE == false}</conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="logowanieDrugaProbaNie" name="nie
 " sourceRef="logowanieDrugaProba" targetRef="odbierzIdentyfikatorReceiveTask">
-      <conditionExpression xsi:type="tFormalExpression">${LOGOWANE_DRUGA_PROBA == false}></conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression">${1 >= LOGOWANIE_PROBA}</conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="logowanieDrugaProbaTak" name="tak
 " sourceRef="logowanieDrugaProba" targetRef="endErrorEventDwukrotnieBledneDane">
-      <conditionExpression xsi:type="tFormalExpression">${LOGOWANE_DRUGA_PROBA == true}></conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression">${LOGOWANIE_PROBA > 1}</conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="danePoprawneTak" name="tak" sourceRef="sid-6FE25323-D508-4097-BBDB-05C926E0BA67" targetRef="endEventNormal">
-      <conditionExpression xsi:type="tFormalExpression">${LOGOWANE_DANE_POPRAWNE == true}></conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression">${LOGOWANE_DANE_POPRAWNE == true}</conditionExpression>
     </sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_danePoprawneTak">

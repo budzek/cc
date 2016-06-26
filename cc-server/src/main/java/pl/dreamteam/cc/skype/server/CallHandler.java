@@ -11,6 +11,7 @@ import pl.dreamteam.cc.service.ActivitiFacadeImpl;
 import pl.dreamteam.cc.service.MessageService;
 
 import javax.annotation.PostConstruct;
+import java.util.Arrays;
 
 /**
  * Created by abu on 23.05.2016.
@@ -56,6 +57,7 @@ public class CallHandler implements org.springframework.context.ApplicationListe
             @Override
             public void callReceived(Call receivedCall) throws SkypeException {
                 onCall(receivedCall);
+                receivedCall.addCallStatusChangedListener(status -> onCallStatusChange(receivedCall, status));
             }
         });
 
@@ -76,6 +78,15 @@ public class CallHandler implements org.springframework.context.ApplicationListe
         activitiFacade.startKolejkaGlownaProcess(skypeId);
     }
 
+    public void onCallStatusChange(Call receivedCall, Call.Status status) throws SkypeException {
+        if(Call.Status.FINISHED.equals(status))
+            onCallFinished(receivedCall.getPartnerId());
+    }
+
+    public void onCallFinished(String skypeId){
+        activitiFacade.endAllProcesses(skypeId);
+    }
+
     public void onMessage(ChatMessage received) throws SkypeException {
         LOGGER.info("RECEIVED FROM: " + received.getSenderDisplayName() + "[" + received.getSenderId() + "] MSG: " + received.getContent());
 
@@ -90,6 +101,31 @@ public class CallHandler implements org.springframework.context.ApplicationListe
         messageService.translate(skypeId, input);
     }
 
+    //SO EASY TO READ xD
+    public void test(){
+        System.out.println("dupa");
+    }
+
+    public void endCall(String skypeId){
+        try {
+            Arrays.stream(Skype.getAllActiveCalls()).filter(call -> {
+                try {
+                    return call.getPartnerId().equals(skypeId);
+                } catch (SkypeException e) {
+                    e.printStackTrace();
+                }
+                return false;
+            }).forEach(call -> {
+                try {
+                    call.cancel();
+                } catch (SkypeException e) {
+                    e.printStackTrace();
+                }
+            });
+        } catch (SkypeException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void forwardCall(Call receivedCall) throws SkypeException {
         Profile.CallForwardingRule[] oldRules = Skype.getProfile().getAllCallForwardingRules();

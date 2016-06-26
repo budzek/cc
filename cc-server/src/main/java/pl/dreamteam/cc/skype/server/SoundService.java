@@ -11,6 +11,6 @@ import java.io.File;
 public class SoundService {
 
     public static void playWelcomePhrase(){
-        SkypeUtils.playSound(new File("c:\\cc-server\\audio\\intro.wav"));
+        SkypeUtils.playSound(new File("c:\\cc-server\\audio\\intro.mp3"));
     }
 }

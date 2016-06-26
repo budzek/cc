@@ -77,6 +77,7 @@ public class ProcesGlownyTest {
         callHandler.onMessage(skypeId, msg);
     }
 
+    @Ignore
     @Test
     public void allGoodChoiceTest() {
         String skypeId = "testSkypeId";
@@ -88,7 +89,35 @@ public class ProcesGlownyTest {
             callHandler.onMessage(skypeId, msg);
             callHandler.onMessage(skypeId, msg);
         });
+    }
 
+    @Test
+    public void loginTest() {
+        String skypeId = "testSkypeId";
+        String msg = "1";
+
+        callHandler.onCall(skypeId);
+        callHandler.onMessage(skypeId, msg);
+
+        callHandler.onMessage(skypeId, "login");
+        callHandler.onMessage(skypeId, "haslo");
+
+        callHandler.onMessage(skypeId, "login");
+        callHandler.onMessage(skypeId, "haslo");
+
+
+        callHandler.onMessage(skypeId, "nie powinno być już obslugiwane");
+    }
+
+    @Ignore
+    @Test
+    public void wrongChoiceTest() {
+        String skypeId = "testSkypeId";
+        String msg = "5";
+
+        callHandler.onCall(skypeId);
+        callHandler.onMessage(skypeId, msg);
+        callHandler.onMessage(skypeId, msg);
     }
 
 

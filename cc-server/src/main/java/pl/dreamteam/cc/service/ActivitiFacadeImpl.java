@@ -38,6 +38,10 @@ public class ActivitiFacadeImpl implements ActivitiService {
     @Autowired
     CallerRepository callerRepository;
 
+
+    @Autowired
+    private RuntimeService runtimeService;
+
     @PostConstruct
     public void init() {
         runtimeService.addEventListener(new ActivitiEventListener() {
@@ -60,28 +64,21 @@ public class ActivitiFacadeImpl implements ActivitiService {
         Map<String, Object> vars = new HashMap<>();
         vars.put("caller", caller);
         vars.put(VARS.CHOICE_FAILURE_COUNT.name(), Integer.valueOf(0));
+        vars.put(VARS.SKYPE_ID.name(), caller.getSkypeId());
+
 
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("procesGlowny", vars);
 
         caller.setProcessInstanceId(processInstance.getId());
         callerRepository.save(caller);
-
-        runtimeService.setVariable(processInstance.getId(), VARS.SKYPE_ID.name(), caller.getSkypeId());
     }
 
-    @Autowired
-    private RuntimeService runtimeService;
 
-//  @Autowired
-//  private ApplicantRepository applicantRepository;
+    public void endAllProcesses(String skypeId) {
+        //TODO THIS SHOULD RATHER GO AS EVENT
+        runtimeService.createProcessInstanceQuery().variableValueEquals(VARS.SKYPE_ID.name(), skypeId).list().stream().forEach(p -> runtimeService.deleteProcessInstance(p.getId(), "CALL FINISHED"));
 
-//  public void startHireProcess(@RequestBody Map<String, String> data) {
-//
-//    Applicant applicant = new Applicant(data.get("name"), data.get("email"), data.get("phoneNumber"));
-//    applicantRepository.save(applicant);
-//
-//    Map<String, Object> vars = Collections.<String, Object>singletonMap("applicant", applicant);
-//    runtimeService.startProcessInstanceByKey("hireProcessWithJpa", vars);
-//  }
+        callerRepository.findAll().stream().filter(c -> c.getSkypeId().equals(skypeId)).forEach(c -> callerRepository.delete(c));
+    }
 
 }
