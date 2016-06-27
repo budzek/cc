@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import pl.dreamteam.cc.exception.ChoiceFailureException;
 import pl.dreamteam.cc.model.*;
 import pl.dreamteam.cc.service.repository.CallerRepository;
+import pl.dreamteam.cc.skype.server.CallHandler;
 
 import java.util.List;
 
@@ -35,6 +36,9 @@ public class MessageService {
 
     @Autowired
     CallerRepository callerRepository;
+
+    @Autowired
+    CallHandler callHandler;
 
     public void translate(String skypeId, String input) {
         //TODO move filtering to query
@@ -130,6 +134,7 @@ public class MessageService {
         if (acitiviyIds.contains(ACTIVITY.PROCES_GLOWNY_ODBIERZ_WYBOR_TASK.getActivityId())) {
             String activityId = ACTIVITY.PROCES_GLOWNY_ODBIERZ_WYBOR_TASK.getActivityId();
             Execution execution = findExecution(processInstanceId, activityId);
+
 
             runtimeService.setVariable(processInstanceId, VARS.CHOICE_FAILURE.name(), false);
 

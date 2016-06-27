@@ -6,9 +6,7 @@
   <message id="NUMER_WYBRANY_PRZEZ_KLIENTA" name="http://www.activiti.org/processdef:NUMER_WYBRANY_PRZEZ_KLIENTA"></message>
   <process id="procesGlowny" isExecutable="true">
     <extensionElements>
-      <!--<activiti:executionListener expression="${callHandler.endCall(SKYPE_ID)}" event="end" />-->
-      <activiti:executionListener expression="${callHandler.test()}" event="end" />
-      <activiti:executionListener expression="${callHandler.test()}" event="start" />
+      <!--<activiti:executionListener expression="${callHandler.endCall(execution)}" event="end" />-->
     </extensionElements>
 
     <sequenceFlow id="sid-9E3AE874-F06F-4DFB-BFA1-0D9470FF54FB" sourceRef="sid-E5C52330-C68E-4ACB-ACD7-575B74ACC372" targetRef="sid-FB7DE2F4-096B-4128-A48F-95FFC694109C"></sequenceFlow>
@@ -65,7 +63,14 @@
       <sequenceFlow id="sid-D482E823-58F0-4874-A24E-E4A9BC139399" sourceRef="callProcesPolaczenieZKonsultantem" targetRef="callProcesObslugaManualna"></sequenceFlow>
       <sequenceFlow id="sid-E6419815-0913-43D8-8FE0-30DE1C24B23D" sourceRef="callProcesObslugaManualna" targetRef="sid-8C632AC2-FEA0-4713-84D9-3539CFB6611A"></sequenceFlow>
       <sequenceFlow id="sid-4011DE09-F669-4D6C-9A32-253FB9E40F18" sourceRef="callProcesObslugaAutomatyczna" targetRef="sid-8C632AC2-FEA0-4713-84D9-3539CFB6611A"></sequenceFlow>
-      <sequenceFlow id="sid-22A58CBB-6A57-4F87-8292-861245C4151C" sourceRef="sid-5D56BB51-F3A1-486A-9298-46E0D0D3C2A8" targetRef="sid-EF15FAAF-D877-436A-B29D-2992C23CDDDC"></sequenceFlow>
+      <sequenceFlow id="rozlaczanieZSystemem" sourceRef="sid-5D56BB51-F3A1-486A-9298-46E0D0D3C2A8" targetRef="sid-EF15FAAF-D877-436A-B29D-2992C23CDDDC">
+        <extensionElements>
+          <!--<activiti:executionListener expression="${callHandler.endCall(SKYPE_ID)}" />-->
+          <!--<activiti:executionListener expression="${callHandler.endCall()}" />-->
+          <activiti:executionListener expression="${callHandler.sendMessage(execution,  'troll')}" event="end" />
+
+        </extensionElements>
+      </sequenceFlow>
       <sequenceFlow id="sid-AD4BA7E2-650F-4B80-A6EB-6D9511D3F78C" sourceRef="sid-352B2FE6-36A5-428D-8975-0F63C9504B2A" targetRef="stOdczytajFrazePowitalna"></sequenceFlow>
       <sequenceFlow id="_4" sourceRef="_3" targetRef="sid-EF15FAAF-D877-436A-B29D-2992C23CDDDC"></sequenceFlow>
       <sequenceFlow id="sid-1B5C770F-2051-465E-B8A5-080E3193E71B" sourceRef="sid-79A75EDF-AB1C-4095-ADE1-F9CE2DA44EFA" targetRef="callProcesPolaczenieZKonsultantem"></sequenceFlow>
@@ -178,7 +183,7 @@
         <omgdi:waypoint x="1547.0" y="243.0"></omgdi:waypoint>
         <omgdi:waypoint x="1546.673129301471" y="440.8000183530366"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="sid-22A58CBB-6A57-4F87-8292-861245C4151C" id="BPMNEdge_sid-22A58CBB-6A57-4F87-8292-861245C4151C">
+      <bpmndi:BPMNEdge bpmnElement="rozlaczanieZSystemem" id="BPMNEdge_rozlaczanieZSystemem">
         <omgdi:waypoint x="1153.6110260014502" y="461.53887036812756"></omgdi:waypoint>
         <omgdi:waypoint x="1189.7276858935222" y="412.41302627790367"></omgdi:waypoint>
       </bpmndi:BPMNEdge>

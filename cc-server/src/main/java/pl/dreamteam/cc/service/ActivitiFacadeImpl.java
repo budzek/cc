@@ -76,9 +76,13 @@ public class ActivitiFacadeImpl implements ActivitiService {
 
     public void endAllProcesses(String skypeId) {
         //TODO THIS SHOULD RATHER GO AS EVENT
-        runtimeService.createProcessInstanceQuery().variableValueEquals(VARS.SKYPE_ID.name(), skypeId).list().stream().forEach(p -> runtimeService.deleteProcessInstance(p.getId(), "CALL FINISHED"));
+        try {
+            runtimeService.createProcessInstanceQuery().variableValueEquals(VARS.SKYPE_ID.name(), skypeId).list().stream().forEach(p -> runtimeService.deleteProcessInstance(p.getId(), "CALL FINISHED"));
+        } catch(Exception e){e.printStackTrace();}
+        try {
+            callerRepository.findAll().stream().filter(c -> c.getSkypeId().equals(skypeId)).forEach(c -> callerRepository.delete(c));
+        } catch(Exception e){e.printStackTrace();}
 
-        callerRepository.findAll().stream().filter(c -> c.getSkypeId().equals(skypeId)).forEach(c -> callerRepository.delete(c));
     }
 
 }

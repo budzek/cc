@@ -6,7 +6,11 @@
     <receiveTask id="odbierzIdentyfikatorReceiveTask" name="Odbierz 
 identyfikator"></receiveTask>
     <receiveTask id="odbierzHasloReceiveTask" name="Odbierz hasło"></receiveTask>
-    <sequenceFlow id="sid-FD00AABF-9EB5-4607-9DB2-30DBADF9403D" sourceRef="startEvent" targetRef="odbierzIdentyfikatorReceiveTask"></sequenceFlow>
+    <sequenceFlow id="sid-FD00AABF-9EB5-4607-9DB2-30DBADF9403D" sourceRef="startEvent" targetRef="odbierzIdentyfikatorReceiveTask">
+      <extensionElements>
+        <activiti:executionListener expression="${callHandler.sendMessage(execution, 'Wpisz login')}"/>
+      </extensionElements>
+    </sequenceFlow>
     <serviceTask id="checkCredentialsServiceTask" name="Sprawdzenie poprawnosci wprowadzonych  danych" activiti:expression="#{logowanieDelegate.execute(execution)}"></serviceTask>
     <exclusiveGateway id="sid-6FE25323-D508-4097-BBDB-05C926E0BA67" name="Dane poprawne?"></exclusiveGateway>
     <exclusiveGateway id="logowanieDrugaProba" name="Druga proba?"></exclusiveGateway>
@@ -14,8 +18,16 @@ identyfikator"></receiveTask>
     <endEvent id="endErrorEventDwukrotnieBledneDane" name="Dwukrotnie błedne dane">
       <errorEventDefinition errorRef="errorNiezalogowany"></errorEventDefinition>
     </endEvent>
-    <sequenceFlow id="odbierzIdentyfikatorOdbierzHaslo" sourceRef="odbierzIdentyfikatorReceiveTask" targetRef="odbierzHasloReceiveTask"></sequenceFlow>
-    <sequenceFlow id="odbierzHasloCheckCredentials" sourceRef="odbierzHasloReceiveTask" targetRef="checkCredentialsServiceTask"></sequenceFlow>
+    <sequenceFlow id="odbierzIdentyfikatorOdbierzHaslo" sourceRef="odbierzIdentyfikatorReceiveTask" targetRef="odbierzHasloReceiveTask">
+      <extensionElements>
+      <activiti:executionListener expression="${callHandler.sendMessage(execution, 'Wpisz haslo')}"/>
+      </extensionElements>
+    </sequenceFlow>
+    <sequenceFlow id="odbierzHasloCheckCredentials" sourceRef="odbierzHasloReceiveTask" targetRef="checkCredentialsServiceTask">
+      <!--<extensionElements>-->
+        <!--<activiti:executionListener expression="${callHandler.sendMessage(execution, 'Wpisz haslo')}"/>-->
+      <!--</extensionElements>-->
+    </sequenceFlow>
     <sequenceFlow id="credentialsValid" sourceRef="checkCredentialsServiceTask" targetRef="sid-6FE25323-D508-4097-BBDB-05C926E0BA67"></sequenceFlow>
     <sequenceFlow id="danePoprawneNie" name="nie " sourceRef="sid-6FE25323-D508-4097-BBDB-05C926E0BA67" targetRef="logowanieDrugaProba">
       <conditionExpression xsi:type="tFormalExpression">${LOGOWANE_DANE_POPRAWNE == false}</conditionExpression>

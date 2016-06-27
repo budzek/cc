@@ -106,7 +106,7 @@ public class ProcesGlownyTest {
         callHandler.onMessage(skypeId, "haslo");
 
 
-        callHandler.onMessage(skypeId, "nie powinno być już obslugiwane");
+//        callHandler.onMessage(skypeId, "nie powinno być już obslugiwane");
     }
 
     @Ignore
